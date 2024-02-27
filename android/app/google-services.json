@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "896335817043",
+    "project_id": "tribb-829ca",
+    "storage_bucket": "tribb-829ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896335817043:android:e4ab76c0f04aba23edd9a6",
+        "android_client_info": {
+          "package_name": "com.cloudcertitude.tribb"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5g6x333O2C3gac98-oZ7vP8pNF7h7NK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
