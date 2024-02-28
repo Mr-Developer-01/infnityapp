@@ -1,4 +1,5 @@
 // import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:tribb/screens/constant/test.dart';
 import 'package:tribb/screens/moreOptions/option_home_page.dart';
@@ -19,6 +20,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var ultraLuxury;
+  var luxury;
+  var premium;
 // FirebaseAuth auth = FirebaseAuth.instance;
 //  User? user;
 //   loginMethod() async{
@@ -37,9 +41,27 @@ class _HomePageState extends State<HomePage> {
 //     }
 
 //   }
+  Future<void> getAllProperties() async {
+    final usersRef = FirebaseFirestore.instance.collection('allproperties');
+    final userDoc = await usersRef.doc('propertyTypes').get();
+    final ultraLuxuryData = userDoc.reference.collection('luxury');
+    final luxuryData = userDoc.reference.collection('ultra_luxury');
+    final premiumData = userDoc.reference.collection('premium');
+    //  final postsQuerySnapshot = await _ultraLuxury.get();
+    var ultraLuxurytemp = await ultraLuxuryData.get();
+    var luxurytemp = await luxuryData.get();
+    var premiumtemp = await premiumData.get();
+    setState(() {
+      ultraLuxury = ultraLuxurytemp.docs;
+      luxury = luxurytemp.docs;
+      premium = premiumtemp.docs;
+    });
+   
+  }
+
   @override
   void initState() {
-    //  loginMethod();
+    getAllProperties();
     super.initState();
   }
 
@@ -149,10 +171,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   onPressed: () {
-                          Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>  MyHomePageChart()),
+                          builder: (context) => MyHomePageChart()),
                     );
                   },
                   icon: Icon(
@@ -318,7 +340,27 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            _tabSection(context),
+            SizedBox(
+              height: 250,
+              width: 500,
+              child: ultraLuxury != null
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: ultraLuxury.length,
+                      itemBuilder: (context, index) {
+                        return _tabSection(context, {
+                          "title": ultraLuxury[index].data()['title'],
+                          "image": ultraLuxury[index].data()['image'],
+                          "rating": ultraLuxury[index].data()['rating'],
+                          "price":ultraLuxury[index].data()['price'],
+                          "location":ultraLuxury[index].data()['location'],
+                        });
+                      })
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 20.0, top: 20),
               child: Align(
@@ -334,7 +376,27 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            _tabSection(context),
+             SizedBox(
+              height: 250,
+              width: 500,
+              child: luxury != null
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: luxury.length,
+                      itemBuilder: (context, index) {
+                        return _tabSection(context, {
+                          "title": luxury[index].data()['title'],
+                          "image": luxury[index].data()['image'],
+                          "rating": luxury[index].data()['rating'],
+                          "price":luxury[index].data()['price'],
+                          "location":luxury[index].data()['location'],
+                        });
+                      })
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
             Padding(
               padding: const EdgeInsets.only(left: 20.0, top: 20),
               child: Align(
@@ -350,7 +412,27 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            _tabSection(context),
+             SizedBox(
+              height: 250,
+              width: 500,
+              child: premium != null
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: premium.length,
+                      itemBuilder: (context, index) {
+                        return _tabSection(context, {
+                          "title": premium[index].data()['title'],
+                          "image": premium[index].data()['image'],
+                          "rating": premium[index].data()['rating'],
+                          "price":premium[index].data()['price'],
+                          "location":premium[index].data()['location'],
+                        });
+                      })
+                  : Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
             const SizedBox(
               height: 40,
             ),
@@ -419,7 +501,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _tabSection(BuildContext context) {
+  Widget _tabSection(BuildContext context, var data) {
     return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
       Padding(
           padding: const EdgeInsets.only(top: 20),
@@ -432,165 +514,148 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(left: 10, right: 10),
               child: SizedBox(
                 // height: MediaQuery.of(context).size.height / 3.5,
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: projectList.length,
-                    itemBuilder: (context, index) {
-                      return SizedBox(
-                        // width: MediaQuery.of(context).size.height / 4,
-                        // height: 90,
-                        child: Padding(
-                          padding: const EdgeInsets.only(),
-                          child: Card(
-                            //  elevation: 0, // No shadow for the image card
-                            clipBehavior:
-                                Clip.antiAlias, // Clip the image card's content
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PropertyDetailsPage(
-                                          projectList[index])),
-                                );
-                              },
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                    minHeight: 100,
-                                    maxHeight: 100,
-                                    maxWidth:
-                                        MediaQuery.of(context).size.height / 4,
-                                    minWidth:
-                                        MediaQuery.of(context).size.height / 4),
-                                child: Column(
+                child: SizedBox(
+                  // width: MediaQuery.of(context).size.height / 4,
+                  // height: 90,
+                  child: Padding(
+                    padding: const EdgeInsets.only(),
+                    child: Card(
+                      //  elevation: 0, // No shadow for the image card
+                      clipBehavior:
+                          Clip.antiAlias, // Clip the image card's content
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PropertyDetailsPage(data)),
+                          );
+                        },
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                              minHeight: 100,
+                              maxHeight: 200,
+                              maxWidth: MediaQuery.of(context).size.height / 4,
+                              minWidth: MediaQuery.of(context).size.height / 4),
+                          child: Column(
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.only(
+                                  topRight: Radius.circular(20),
+                                  topLeft: Radius.circular(20),
+                                ),
+                                child: Stack(
                                   children: [
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(20),
-                                        topLeft: Radius.circular(20),
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Image.network(
-                                            projectList[index]['image']
-                                                .toString(),
-                                            height: 100,
-                                            width: double.infinity,
-                                            fit: BoxFit.fill,
-                                          ),
-                                          Align(
-                                              alignment: Alignment.topRight,
-                                              child: IconButton(
-                                                  onPressed: () {
-                                                    setState(() {
-                                                      projectList[index][
-                                                                  'isWishListed'] ==
-                                                              false
-                                                          ? projectList[index][
-                                                                  'isWishListed'] =
-                                                              true
-                                                          : projectList[index][
-                                                                  'isWishListed'] =
-                                                              false;
-                                                    });
-                                                  },
-                                                  icon: projectList[index][
-                                                              'isWishListed'] ==
-                                                          false
-                                                      ? const Icon(
-                                                          Icons
-                                                              .favorite_border_outlined,
-                                                          color: Colors.white,
-                                                        )
-                                                      : const Icon(
-                                                          Icons.favorite_sharp,
-                                                          color: Colors.red,
-                                                        ))),
-                                        ],
-                                      ),
+                                    Image.network(
+                                      data['image'],
+                                      height: 120,
+                                      width: double.infinity,
+                                      fit: BoxFit.fill,
                                     ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, right: 10, bottom: 5),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            projectList[index]['name']!
-                                                .toString(),
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                              color: ColorsClass.themeColor,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                          ),
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: Text(
-                                              projectList[index]['rating']!
-                                                  .toString(),
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: ColorsClass.themeColor,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                    // Align(
+                                    //     alignment: Alignment.topRight,
+                                    //     child: IconButton(
+                                    //         onPressed: () {
+                                    //           setState(() {
+                                    //             data.data()['isWishListed'] ==
+                                    //                     false
+                                    //                 ? data.data()[
+                                    //                     'isWishListed'] = true
+                                    //                 : data.data()[
+                                    //                     'isWishListed'] = false;
+                                    //           });
+                                    //         },
+                                    //         icon: data.data()['isWishListed'] ==
+                                    //                 false
+                                    //             ? const Icon(
+                                    //                 Icons
+                                    //                     .favorite_border_outlined,
+                                    //                 color: Colors.white,
+                                    //               )
+                                    //             : const Icon(
+                                    //                 Icons.favorite_sharp,
+                                    //                 color: Colors.red,
+                                    //               ))),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 5),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      data['title']!.toString(),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorsClass.themeColor,
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, right: 10, bottom: 10),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Icons.location_on,
-                                            color: ColorsClass.themeColor,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            projectList[index]['location']!
-                                                .toString(),
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              color: ColorsClass.themeColor,
-                                            ),
-                                          ),
-                                          const Spacer(),
-                                          Text(
-                                            '₹ ${projectList[index]['amount']!}',
-                                            style: TextStyle(
-                                              color: ColorsClass.themeColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ],
+                                    const Spacer(),
+                                    const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Text(
+                                        data['rating']!.toString(),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: ColorsClass.themeColor,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, bottom: 10),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Icons.location_on,
+                                      color: ColorsClass.themeColor,
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      data['location']!.toString(),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: ColorsClass.themeColor,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      '₹ ${data['price']!}',
+                                      style: TextStyle(
+                                        color: ColorsClass.themeColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ))

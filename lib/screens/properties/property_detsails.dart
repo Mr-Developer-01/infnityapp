@@ -56,7 +56,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
           color: ColorsClass.themeColor
         ),
         title: Text(
-          '${data['name']}',
+          '${data['title']}',
           style: TextStyle(fontSize: 15, color: ColorsClass.themeColor),
         ),
         actions: [
@@ -176,7 +176,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
                         child: Icon(Icons.currency_rupee,
                             color: ColorsClass.themeColor))),
                 content: Center(
-                    child: Text('${data['amount']}',
+                    child: Text('${data['price']}',
                         style: TextStyle(color: ColorsClass.themeColor))),
               ),
             ),
