@@ -1,9 +1,11 @@
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:tribb/screens/constant/test.dart';
 import 'package:tribb/screens/moreOptions/option_home_page.dart';
-import 'package:tribb/screens/properties/property_detsails.dart';
+import 'package:tribb/screens/properties/property_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:tribb/screens/Profile/profile_page.dart';
@@ -23,42 +25,97 @@ class _HomePageState extends State<HomePage> {
   var ultraLuxury;
   var luxury;
   var premium;
-// FirebaseAuth auth = FirebaseAuth.instance;
-//  User? user;
-//   loginMethod() async{
-//     try{
-// UserCredential userCredential = await auth.signInWithEmailAndPassword(email: "deepu.singh@cloudcertitude.com", password: "Cloud@#123");
-//   user = userCredential.user;
-//   if(user != null){
-//     print('##################################Done################################');
-//   }else{
-//     print('##################################Error1################################');
-
-//   }
-//     }catch(e){
-//     print('##################################Error2####$e');
-
-//     }
-
-//   }
   Future<void> getAllProperties() async {
+    var ultraTemp = [];
+    var luxTemp = [];
+    var priTemp = [];
     final usersRef = FirebaseFirestore.instance.collection('allproperties');
     final userDoc = await usersRef.doc('propertyTypes').get();
-    final ultraLuxuryData = userDoc.reference.collection('luxury');
-    final luxuryData = userDoc.reference.collection('ultra_luxury');
+    final ultraLuxuryData = userDoc.reference.collection('ultra_luxury');
+    final luxuryData = userDoc.reference.collection('luxury');
     final premiumData = userDoc.reference.collection('premium');
     //  final postsQuerySnapshot = await _ultraLuxury.get();
     var ultraLuxurytemp = await ultraLuxuryData.get();
+
     var luxurytemp = await luxuryData.get();
     var premiumtemp = await premiumData.get();
+
+    for (var element in ultraLuxurytemp.docs) {
+      var objData = await getWishLitedProperties(element.id);
+      var jsoData = jsonDecode(jsonEncode(objData));
+      ultraTemp.add({
+        "id": element.id,
+        "title": element.data()['title'],
+        "image": element.data()['image'],
+        "rating": element.data()['rating'],
+        "price": element.data()['price'],
+        "location": element.data()['location'],
+        "isWishListed": jsoData['isWishListed'],
+        "WishListedid": jsoData['id'],
+      });
+    }
+    for (var element in luxurytemp.docs) {
+      var objData = await getWishLitedProperties(element.id);
+      var jsoData = jsonDecode(jsonEncode(objData));
+      luxTemp.add({
+        "id": element.id,
+        "title": element.data()['title'],
+        "image": element.data()['image'],
+        "rating": element.data()['rating'],
+        "price": element.data()['price'],
+        "location": element.data()['location'],
+        "isWishListed": jsoData['isWishListed'],
+        "WishListedid": jsoData['id'],
+      });
+    }
+    for (var element in premiumtemp.docs) {
+      var objData = await getWishLitedProperties(element.id);
+      var jsoData = jsonDecode(jsonEncode(objData));
+      priTemp.add({
+        "id": element.id,
+        "title": element.data()['title'],
+        "image": element.data()['image'],
+        "rating": element.data()['rating'],
+        "price": element.data()['price'],
+        "location": element.data()['location'],
+        "isWishListed": jsoData['isWishListed'],
+        "WishListedid": jsoData['id'],
+      });
+    }
     setState(() {
-      ultraLuxury = ultraLuxurytemp.docs;
-      luxury = luxurytemp.docs;
-      premium = premiumtemp.docs;
+      ultraLuxury = ultraTemp;
+      luxury = luxTemp;
+      premium = priTemp;
     });
-   
   }
 
+  Future<Object> getWishLitedProperties(var propid) async {
+    final usersRef = FirebaseFirestore.instance.collection('allproperties');
+    final userDoc = await usersRef.doc('propertyTypes').get();
+    final ultraLuxuryData = await userDoc.reference
+        .collection('user_wish_list')
+        .where('property_id', isEqualTo: propid)
+        .where('user_id', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (ultraLuxuryData.docs.isNotEmpty) {
+      return {
+        "isWishListed": ultraLuxuryData.docs[0]['isWishListed'],
+        "id": ultraLuxuryData.docs[0].id
+      };
+    }
+    return {"isWishListed": false, "id": ""};
+  }
+
+showToastMessage(message){
+  Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+}
   @override
   void initState() {
     getAllProperties();
@@ -350,14 +407,19 @@ class _HomePageState extends State<HomePage> {
                       itemCount: ultraLuxury.length,
                       itemBuilder: (context, index) {
                         return _tabSection(context, {
-                          "title": ultraLuxury[index].data()['title'],
-                          "image": ultraLuxury[index].data()['image'],
-                          "rating": ultraLuxury[index].data()['rating'],
-                          "price":ultraLuxury[index].data()['price'],
-                          "location":ultraLuxury[index].data()['location'],
+                          "id": ultraLuxury[index]['id'],
+                          "title": ultraLuxury[index]['title'],
+                          "image": ultraLuxury[index]['image'],
+                          "rating": ultraLuxury[index]['rating'],
+                          "price": ultraLuxury[index]['price'],
+                          "location": ultraLuxury[index]['location'],
+                          "isWishListed": ultraLuxury[index]['isWishListed'],
+                          "WishListedid": ultraLuxury[index]['WishListedid'],
+                          "index": index,
+                          "type": "Ultra Luxury"
                         });
                       })
-                  : Center(
+                  : const Center(
                       child: CircularProgressIndicator(),
                     ),
             ),
@@ -376,7 +438,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-             SizedBox(
+            SizedBox(
               height: 250,
               width: 500,
               child: luxury != null
@@ -386,14 +448,19 @@ class _HomePageState extends State<HomePage> {
                       itemCount: luxury.length,
                       itemBuilder: (context, index) {
                         return _tabSection(context, {
-                          "title": luxury[index].data()['title'],
-                          "image": luxury[index].data()['image'],
-                          "rating": luxury[index].data()['rating'],
-                          "price":luxury[index].data()['price'],
-                          "location":luxury[index].data()['location'],
+                          "id": luxury[index]['id'],
+                          "title": luxury[index]['title'],
+                          "image": luxury[index]['image'],
+                          "rating": luxury[index]['rating'],
+                          "price": luxury[index]['price'],
+                          "location": luxury[index]['location'],
+                          "isWishListed": luxury[index]['isWishListed'],
+                          "WishListedid": luxury[index]['WishListedid'],
+                          "index": index,
+                          "type": "Luxury"
                         });
                       })
-                  : Center(
+                  : const Center(
                       child: CircularProgressIndicator(),
                     ),
             ),
@@ -412,7 +479,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-             SizedBox(
+            SizedBox(
               height: 250,
               width: 500,
               child: premium != null
@@ -422,14 +489,19 @@ class _HomePageState extends State<HomePage> {
                       itemCount: premium.length,
                       itemBuilder: (context, index) {
                         return _tabSection(context, {
-                          "title": premium[index].data()['title'],
-                          "image": premium[index].data()['image'],
-                          "rating": premium[index].data()['rating'],
-                          "price":premium[index].data()['price'],
-                          "location":premium[index].data()['location'],
+                          "id": premium[index]['id'],
+                          "title": premium[index]['title'],
+                          "image": premium[index]['image'],
+                          "rating": premium[index]['rating'],
+                          "price": premium[index]['price'],
+                          "location": premium[index]['location'],
+                          "isWishListed": premium[index]['isWishListed'],
+                          "WishListedid": premium[index]['WishListedid'],
+                          "index": index,
+                          "type": "Premium"
                         });
                       })
-                  : Center(
+                  : const Center(
                       child: CircularProgressIndicator(),
                     ),
             ),
@@ -441,7 +513,7 @@ class _HomePageState extends State<HomePage> {
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
-                  'DG-B-1704 & 05, 17th Floor, Emaar Digital Green, Golf course Extn. Road, Sector-61, Gurugram, Haryana 122011',
+                  'Cloud Certitude Private Limited, 2nd-3rd Floor, B 6-7, Unique Tower,main, Pushkar Rd, near Bank of Baroda, Haribhau Upadhyay Nagar,Ajmer, Rajasthan 305001',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: ColorsClass.themeColor,
@@ -556,30 +628,106 @@ class _HomePageState extends State<HomePage> {
                                       width: double.infinity,
                                       fit: BoxFit.fill,
                                     ),
-                                    // Align(
-                                    //     alignment: Alignment.topRight,
-                                    //     child: IconButton(
-                                    //         onPressed: () {
-                                    //           setState(() {
-                                    //             data.data()['isWishListed'] ==
-                                    //                     false
-                                    //                 ? data.data()[
-                                    //                     'isWishListed'] = true
-                                    //                 : data.data()[
-                                    //                     'isWishListed'] = false;
-                                    //           });
-                                    //         },
-                                    //         icon: data.data()['isWishListed'] ==
-                                    //                 false
-                                    //             ? const Icon(
-                                    //                 Icons
-                                    //                     .favorite_border_outlined,
-                                    //                 color: Colors.white,
-                                    //               )
-                                    //             : const Icon(
-                                    //                 Icons.favorite_sharp,
-                                    //                 color: Colors.red,
-                                    //               ))),
+                                    Align(
+                                        alignment: Alignment.topRight,
+                                        child: IconButton(
+                                            onPressed: () async {
+                                              var usersRef = FirebaseFirestore
+                                                  .instance
+                                                  .collection('allproperties');
+                                              var userDocRef =
+                                                  usersRef.doc('propertyTypes');
+                                              var postsRef = userDocRef
+                                                  .collection('user_wish_list');
+
+                                              if (data['isWishListed'] ==
+                                                  true) {
+                                                var postDocRef = await postsRef
+                                                    .doc(data['WishListedid'])
+                                                    .get();
+                                                try {
+                                                  await postDocRef.reference
+                                                      .delete();
+                                                      showToastMessage('Property removed from wish list');
+                                                  print(
+                                                      'Data removed successfully!');
+                                                  setState(() {
+                                                    if (data['type'] ==
+                                                        'Ultra Luxury') {
+                                                      ultraLuxury[data['index']]
+                                                              ['isWishListed'] =
+                                                          false;
+                                                    } else if (data['type'] ==
+                                                        'Luxury') {
+                                                      luxury[data['index']]
+                                                              ['isWishListed'] =
+                                                          false;
+                                                    } else if (data['type'] ==
+                                                        'Premium') {
+                                                      premium[data['index']]
+                                                              ['isWishListed'] =
+                                                          false;
+                                                    }
+                                                  });
+                                                } catch (e) {
+                                                  print(
+                                                      'Error deleting document: $e');
+                                                }
+                                              } else {
+                                                final newDocRef =
+                                                    await postsRef.add({
+                                                  "isWishListed": true,
+                                                  'property_id': data['id'],
+                                                  'user_id': FirebaseAuth
+                                                      .instance
+                                                      .currentUser!
+                                                      .uid,
+                                                });
+                                                setState(() {
+                                                  setState(() {
+                                                    if (data['type'] ==
+                                                        'Ultra Luxury') {
+                                                      ultraLuxury[data['index']]
+                                                              ['isWishListed'] =
+                                                          true;
+                                                      ultraLuxury[data['index']]
+                                                              ['WishListedid'] =
+                                                          newDocRef.id;
+                                                    } else if (data['type'] ==
+                                                        'Luxury') {
+                                                      luxury[data['index']]
+                                                              ['isWishListed'] =
+                                                          true;
+                                                      luxury[data['index']]
+                                                              ['WishListedid'] =
+                                                          newDocRef.id;
+                                                    } else if (data['type'] ==
+                                                        'Premium') {
+                                                      premium[data['index']]
+                                                              ['isWishListed'] =
+                                                          true;
+                                                      premium[data['index']]
+                                                              ['WishListedid'] =
+                                                          newDocRef.id;
+                                                    }
+                                                  });
+                                                });
+                                                showToastMessage('Property added to wish list');
+                                                // });
+                                                print(
+                                                    'Data inserted successfully! ${data['isWishListed']}');
+                                              }
+                                            },
+                                            icon: data['isWishListed'] == false
+                                                ? const Icon(
+                                                    Icons
+                                                        .favorite_border_outlined,
+                                                    color: Colors.white,
+                                                  )
+                                                : const Icon(
+                                                    Icons.favorite_sharp,
+                                                    color: Colors.red,
+                                                  ))),
                                   ],
                                 ),
                               ),

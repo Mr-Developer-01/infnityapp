@@ -1,5 +1,6 @@
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/moreOptions/post-requirement/post_requirement_page.dart';
+import 'package:tribb/screens/moreOptions/property-calculator/property_calculator.dart';
 import 'package:tribb/screens/moreOptions/rent%20aggrement/rent_page.dart';
 import 'package:tribb/screens/moreOptions/upload-property/upload_property_page.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,14 @@ class _OptionHomePageState extends State<OptionHomePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const PostRequirementPage()),
+                  );
+                }),
+           makeDashboardItem("Property Cost Calculator", 'assets/images/calculator.png',
+                    onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const PropertyCalculator()),
                   );
                 }),
         ],

@@ -68,6 +68,8 @@ dependencies:
   flash: ^3.1.0
   syncfusion_flutter_signaturepad: ^24.2.6
   datetime_picker_formfield: ^2.0.1
+  syncfusion_flutter_sliders: ^24.2.8
+  another_xlider: ^3.0.2
 
 dev_dependencies:
   flutter_test:

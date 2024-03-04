@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_typing_uninitialized_variables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:tribb/screens/Profile/wishlist_page.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/user.dart';
 import 'package:tribb/widgets/colors_changer.dart';
@@ -304,6 +305,47 @@ class _ProfilePageState extends State<ProfilePage> {
           const SizedBox(
             height: 10,
           ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const WishlistPage()),
+              );
+            },
+            child: Container(
+              margin: const EdgeInsets.only(left: 10, right: 10),
+              padding: const EdgeInsets.all(10.0),
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: ColorsClass.themeColor),
+              ), //             <--- BoxDecoration here
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 40,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Wishlist',
+                          style: TextStyle(
+                              fontSize: 16.0, color: ColorsClass.themeColor),
+                        ),
+                        const Spacer(),
+                        Icon(
+                          Icons.arrow_forward_ios_outlined,
+                          color: ColorsClass.themeColor,
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height:10,),
           GestureDetector(
             onTap: () {
               Navigator.push(

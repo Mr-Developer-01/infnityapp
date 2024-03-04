@@ -118,6 +118,7 @@ setState(() {
                       SizedBox(
                         width: 250,
                         child: TextFormField(
+                          autocorrect :false,
                           validator: (value) {
                             if (value == null || value == '') {
                               return 'This field is requied';

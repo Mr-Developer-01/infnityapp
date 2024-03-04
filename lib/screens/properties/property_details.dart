@@ -1,6 +1,6 @@
-// ignore_for_file: pre, must_be_immutable, prefer_typing_uninitialized_variables
+// ignore_for_file: pre, must_be_immutable, prefer_typing_uninitialized_variables, deprecated_member_use
 import 'dart:convert';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/property_data.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +30,13 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
   getUsername() async {
     for (var i = 0; i < PropertyData.userList.length; i++) {
       var name = await generateusername();
-      if(mounted){
+      if (mounted) {
         setState(() {
-        PropertyData.userList[i] = name;
-        if (i == PropertyData.userList.length - 1) {
-          isLoadingMode = false;
-        }
-      });
+          PropertyData.userList[i] = name;
+          if (i == PropertyData.userList.length - 1) {
+            isLoadingMode = false;
+          }
+        });
       }
     }
   }
@@ -52,25 +52,23 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
     var data = widget.propertyDetails;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(
-          color: ColorsClass.themeColor
-        ),
+        iconTheme: IconThemeData(color: ColorsClass.themeColor),
         title: Text(
           '${data['title']}',
           style: TextStyle(fontSize: 15, color: ColorsClass.themeColor),
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                if(mounted){
-                  setState(() {
-                  data['isWishListed'] = !data['isWishListed'];
-                });
-                }
-              },
-              icon: data['isWishListed'] == false
-                  ? Icon(Icons.favorite_border, color: ColorsClass.themeColor)
-                  : const Icon(Icons.favorite, color: Colors.red)),
+          // IconButton(
+          //     onPressed: () {
+          //       if (mounted) {
+          //         setState(() {
+          //           data['isWishListed'] = !data['isWishListed'];
+          //         });
+          //       }
+          //     },
+          //     icon: data['isWishListed'] == false
+          //         ? Icon(Icons.favorite_border, color: ColorsClass.themeColor)
+          //         : const Icon(Icons.favorite, color: Colors.red)),
           IconButton(
               onPressed: () {
                 // Navigator.push(
@@ -119,10 +117,10 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
                 indicatorSize: TabBarIndicatorSize.tab,
                 // indicatorColor: Colors.white,
                 onTap: (value) {
-                  if(mounted){
+                  if (mounted) {
                     setState(() {
-                    tabIndex = value;
-                  });
+                      tabIndex = value;
+                    });
                   }
                 },
                 isScrollable: true,
@@ -184,29 +182,48 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
         ),
         Row(
           children: [
-            SizedBox(
-              width: 180,
-              child: GFCard(
-                title: GFListTile(
-                    title: Center(
-                        child: Icon(Icons.location_on_outlined,
-                            color: ColorsClass.themeColor))),
-                content: Center(
-                    child: Text('${data['location']}',
-                        style: TextStyle(color: ColorsClass.themeColor))),
+            GestureDetector(
+              onTap: () async {
+                String url =
+                    'geo:0,0?q=${data['location']}';
+                Uri url0 = Uri.parse(url);
+                launchUrl(url0, mode: LaunchMode.externalApplication);
+              },
+              child: SizedBox(
+                width: 180,
+                child: GFCard(
+                  title: GFListTile(
+                      title: Center(
+                          child: Icon(Icons.location_on_outlined,
+                              color: ColorsClass.themeColor))),
+                  content: Center(
+                      child: Text('${data['location']}',
+                          style: TextStyle(color: ColorsClass.themeColor))),
+                ),
               ),
             ),
             const Spacer(),
-            SizedBox(
-              width: 180,
-              child: GFCard(
-                title: GFListTile(
-                  title: Center(
-                      child: Icon(Icons.phone, color: ColorsClass.themeColor)),
+            GestureDetector(
+              onTap: () async {
+                String url = 'tel:7984336587';
+                if (await canLaunch(url)) {
+                  await launch(url);
+                } else {
+                  throw 'Could not launch $url';
+                }
+              },
+              child: SizedBox(
+                width: 180,
+                child: GFCard(
+                  title: GFListTile(
+                    title: Center(
+                        child:
+                            Icon(Icons.phone, color: ColorsClass.themeColor)),
+                  ),
+                  content: Center(
+                      child: Text('7984336587',
+                          style: TextStyle(color: ColorsClass.themeColor))),
                 ),
-                content: Center(
-                    child: Text('7984336587',
-                        style: TextStyle(color: ColorsClass.themeColor))),
               ),
             ),
           ],
@@ -349,9 +366,12 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
             child: GFCard(
               title: GFListTile(
                   title: Center(
-                      child: PropertyData.facilitiesList[index]['icon'] as Widget)),
-              content:
-                  Text(PropertyData.facilitiesList[index]['name'].toString(),style: TextStyle(color: ColorsClass.themeColor),),
+                      child: PropertyData.facilitiesList[index]['icon']
+                          as Widget)),
+              content: Text(
+                PropertyData.facilitiesList[index]['name'].toString(),
+                style: TextStyle(color: ColorsClass.themeColor),
+              ),
             ),
           );
         },
