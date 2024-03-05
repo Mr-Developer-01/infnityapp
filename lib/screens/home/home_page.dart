@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_typing_uninitialized_variables, empty_catches
+
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -82,11 +84,13 @@ class _HomePageState extends State<HomePage> {
         "WishListedid": jsoData['id'],
       });
     }
-    setState(() {
+   if(mounted){
+     setState(() {
       ultraLuxury = ultraTemp;
       luxury = luxTemp;
       premium = priTemp;
     });
+   }
   }
 
   Future<Object> getWishLitedProperties(var propid) async {
@@ -106,16 +110,16 @@ class _HomePageState extends State<HomePage> {
     return {"isWishListed": false, "id": ""};
   }
 
-showToastMessage(message){
-  Fluttertoast.showToast(
+  showToastMessage(message) {
+    Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
-}
+        fontSize: 16.0);
+  }
+
   @override
   void initState() {
     getAllProperties();
@@ -207,7 +211,10 @@ showToastMessage(message){
                 context,
                 MaterialPageRoute(
                     builder: (context) => const UpdateProfileScreen()),
-              );
+              ).then((val) {
+                print('Called Back Pressed');
+                getAllProperties();
+              });
             },
             child: const GFAvatar(
               backgroundImage: AssetImage(
@@ -648,10 +655,10 @@ showToastMessage(message){
                                                 try {
                                                   await postDocRef.reference
                                                       .delete();
-                                                      showToastMessage('Property removed from wish list');
-                                                  print(
-                                                      'Data removed successfully!');
-                                                  setState(() {
+                                                  showToastMessage(
+                                                      'Property removed from wish list');
+                                                 if(mounted){
+                                                   setState(() {
                                                     if (data['type'] ==
                                                         'Ultra Luxury') {
                                                       ultraLuxury[data['index']]
@@ -669,10 +676,8 @@ showToastMessage(message){
                                                           false;
                                                     }
                                                   });
-                                                } catch (e) {
-                                                  print(
-                                                      'Error deleting document: $e');
-                                                }
+                                                 }
+                                                } catch (e) {}
                                               } else {
                                                 final newDocRef =
                                                     await postsRef.add({
@@ -683,8 +688,8 @@ showToastMessage(message){
                                                       .currentUser!
                                                       .uid,
                                                 });
-                                                setState(() {
-                                                  setState(() {
+                                                 if(mounted){
+                                                   setState(() {
                                                     if (data['type'] ==
                                                         'Ultra Luxury') {
                                                       ultraLuxury[data['index']]
@@ -711,11 +716,10 @@ showToastMessage(message){
                                                           newDocRef.id;
                                                     }
                                                   });
-                                                });
-                                                showToastMessage('Property added to wish list');
+                                                 }
+                                                showToastMessage(
+                                                    'Property added to wish list');
                                                 // });
-                                                print(
-                                                    'Data inserted successfully! ${data['isWishListed']}');
                                               }
                                             },
                                             icon: data['isWishListed'] == false

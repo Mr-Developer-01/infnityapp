@@ -1,14 +1,8 @@
 // ignore_for_file: avoid_unnecessary_containers
 
 import 'package:another_xlider/models/handler.dart';
-import 'package:another_xlider/models/handler_animation.dart';
-import 'package:another_xlider/models/hatch_mark.dart';
-import 'package:another_xlider/models/hatch_mark_label.dart';
-import 'package:another_xlider/models/slider_step.dart';
 import 'package:another_xlider/models/tooltip/tooltip.dart';
 import 'package:another_xlider/models/trackbar.dart';
-import 'package:another_xlider/widgets/sized_box.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tribb/screens/constant/colors.dart';
@@ -32,7 +26,6 @@ class _PropertyCalculatorState extends State<PropertyCalculator> {
 
   @override
   void initState() {
-    print(FirebaseAuth.instance.currentUser!.uid);
     super.initState();
   }
 
@@ -199,10 +192,10 @@ class _PropertyCalculatorState extends State<PropertyCalculator> {
              
               max: 10000000,
               min: 100000,
-              onDragging: (_handlerIndex, _lowerValue, _upperValue) {
+              onDragging: (handlerIndex, lowerValue, upperValue) {
                 setState(() {
-                  _forAmountlv = _lowerValue;
-                  _forAmountuv = _upperValue;
+                  _forAmountlv = lowerValue;
+                  _forAmountuv = upperValue;
                 });
               },
             )),
@@ -242,10 +235,10 @@ class _PropertyCalculatorState extends State<PropertyCalculator> {
               max: 20,
               min: 1,
               // jump: true,
-              onDragging: (_handlerIndex, _lowerValue, _upperValue) {
+              onDragging: (handlerIndex, lowerValue, upperValue) {
                 setState(() {
-                  _forInterestlv = _lowerValue;
-                  _forInterestuv = _upperValue;
+                  _forInterestlv = lowerValue;
+                  _forInterestuv = upperValue;
                 });
               },
             )),
@@ -285,10 +278,10 @@ class _PropertyCalculatorState extends State<PropertyCalculator> {
                 
               max: 30,
               min: 1,
-              onDragging: (_handlerIndex, _lowerValue, _upperValue) {
+              onDragging: (handlerIndex, lowerValue, upperValue) {
                 setState(() {
-                  _forDurationlv = _lowerValue;
-                  _forDurationuv = _upperValue;
+                  _forDurationlv = lowerValue;
+                  _forDurationuv = upperValue;
                 });
               },
             )),

@@ -239,7 +239,7 @@ class _UploadPropertyState extends State<UploadProperty> {
     }
   ];
   Future getImages() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery,imageQuality:5);
     if (image != null) {
       imagesBase64 = [];
       selectedImages = [];
@@ -270,7 +270,7 @@ class _UploadPropertyState extends State<UploadProperty> {
     // } else {
     //   ScaffoldMessenger.of(context)
     //       .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
-    // }
+    // }ccccccc
   }
 
   addNewProperty() async {
