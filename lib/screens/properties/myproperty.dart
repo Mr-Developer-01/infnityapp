@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tribb/screens/constant/colors.dart';
+import 'package:tribb/screens/properties/property_details.dart';
 
 class Myproperty extends StatefulWidget {
   const Myproperty({super.key});
@@ -118,7 +119,23 @@ class _MypropertyState extends State<Myproperty> {
                 scrollDirection: Axis.vertical,
                 itemCount: propertydata.length,
                 itemBuilder: (context, index) {
-                  return SizedBox(
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PropertyDetailsPage({
+                                      "title":propertydata[index]['title'],
+                                      "image":propertydata[index]['image'],
+                                      "location":propertydata[index]['address'],
+                                      "price":propertydata[index]['price'],
+                                      "rating":'4.9',
+                                      "page_type":'myproperties',
+
+                                    })),
+                          );
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Card(

@@ -586,7 +586,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.only(top: 20),
           child: ConstrainedBox(
             constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height / 4,
+              maxHeight: MediaQuery.of(context).size.height / 3,
               // minHeight: MediaQuery.of(context).size.height / 4,
             ),
             child: Padding(

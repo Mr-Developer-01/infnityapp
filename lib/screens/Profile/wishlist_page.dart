@@ -47,7 +47,7 @@ class _WishlistPageState extends State<WishlistPage> {
     for (var doc in luxuryDocs.docs) {
       bool containsProId = ids.any((element) => element['proId'] == doc.id);
       if (containsProId) {
-         var filteredList =
+        var filteredList =
             ids.where((element) => element['proId'] == doc.id).toList();
         print(filteredList);
         documents.add({
@@ -60,7 +60,7 @@ class _WishlistPageState extends State<WishlistPage> {
     for (var doc in premiumDocs.docs) {
       bool containsProId = ids.any((element) => element['proId'] == doc.id);
       if (containsProId) {
-         var filteredList =
+        var filteredList =
             ids.where((element) => element['proId'] == doc.id).toList();
         print(filteredList);
         documents.add({
@@ -70,11 +70,19 @@ class _WishlistPageState extends State<WishlistPage> {
         });
       }
     }
-    setState(() {
-      wishlistDataList = documents;
-      isLoadingMode = false;
-    });
-    print('wishlistDataList ${wishlistDataList[2]}');
+    if (documents.isNotEmpty) {
+      setState(() {
+        wishlistDataList = documents;
+        isLoadingMode = false;
+      });
+    }else{
+      setState(() {
+        wishlistDataList = [];
+        isLoadingMode = false;
+      });
+    }
+
+    print('wishlistDataList ${wishlistDataList}');
     return documents;
   }
 
@@ -100,6 +108,7 @@ class _WishlistPageState extends State<WishlistPage> {
       getDataForIds(tempList);
     } else {
       setState(() {
+        wishlistDataList = [];
         isLoadingMode = false;
       });
     }

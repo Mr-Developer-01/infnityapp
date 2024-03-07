@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/custom_bottom_bar.dart';
@@ -13,10 +15,26 @@ class ReferFriendPage extends StatefulWidget {
 }
 
 class _ReferFriendPageState extends State<ReferFriendPage> {
+  var referCode = '';
   void onClickMenu(MenuItemProvider item) {}
 
   void onDismiss() {}
-
+getReferralCode()async{
+   final usersRef = await FirebaseFirestore.instance
+        .collection('users')
+        .where("uId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (usersRef.docs.isNotEmpty) {
+      setState(() {
+        referCode = usersRef.docs[0]['referral_code'];
+      });
+    }
+}
+@override
+  void initState() {
+    getReferralCode();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +83,7 @@ class _ReferFriendPageState extends State<ReferFriendPage> {
                     Row(
                       children: [
                         Text(
-                          '7BHE78',
+                          referCode != ''?referCode:'Loding...',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: ColorsClass.themeColor,

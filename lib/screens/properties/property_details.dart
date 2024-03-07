@@ -19,7 +19,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
   int tabIndex = 0;
-  bool isLoadingMode = true;
+  bool isLoadingMode = false;
   @override
   void initState() {
     getUsername();
@@ -28,17 +28,19 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
   }
 
   getUsername() async {
-    for (var i = 0; i < PropertyData.userList.length; i++) {
-      var name = await generateusername();
-      if (mounted) {
-        setState(() {
-          PropertyData.userList[i] = name;
-          if (i == PropertyData.userList.length - 1) {
-            isLoadingMode = false;
-          }
-        });
-      }
-    }
+    // for (var i = 0; i < PropertyData.userList.length; i++) {
+    //   var name = await generateusername();
+    //       print(name);
+
+    //   if (mounted) {
+    //     setState(() {
+    //       PropertyData.userList[i] = name;
+    //       if (i == PropertyData.userList.length - 1) {
+    //         isLoadingMode = false;
+    //       }
+    //     });
+    //   }
+    // }
   }
 
   @override
@@ -92,11 +94,18 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
                     borderRadius: BorderRadius.circular(20),
                   ),
                   // shape: ,
-                  child: Image.network(
-                    data['image'],
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                  ),
+                  child: data['page_type'] != 'myproperties'
+                      ? Image.network(
+                          data['image'],
+                          fit: BoxFit.fill,
+                          width: double.infinity,
+                        )
+                      : Image.memory(
+                          base64Decode(data['image']!),
+                          height: 165,
+                          width: double.infinity,
+                          fit: BoxFit.fill,
+                        ),
                   // elevation:0
                   // showOverlayImage :true
                 ),
@@ -184,8 +193,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
           children: [
             GestureDetector(
               onTap: () async {
-                String url =
-                    'geo:0,0?q=${data['location']}';
+                String url = 'geo:0,0?q=${data['location']}';
                 Uri url0 = Uri.parse(url);
                 launchUrl(url0, mode: LaunchMode.externalApplication);
               },
@@ -238,7 +246,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
         bottom: 20,
       ),
       child: Container(
-        height: 450,
+        height: 400,
         width: 500,
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
@@ -287,36 +295,39 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage>
         height: 400,
         width: 500,
         child: !isLoadingMode
-            ? ListView.builder(
-                itemCount: PropertyData.userList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: ListTile(
-                      leading: Image.network(
-                          generateAvatar(PropertyData.userList[index])),
-                      trailing: Wrap(
-                        spacing: 0, // space between two icons
-                        children: <Widget>[
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.call,
-                                color: ColorsClass.themeColor,
-                              )), // icon-1
-                          IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.message,
-                                color: ColorsClass.themeColor,
-                              )), // icon-1
-                        ],
+            ? Padding(
+              padding: const EdgeInsets.only(bottom: 30),
+              child: ListView.builder(
+                  itemCount: PropertyData.userList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: ListTile(
+                        leading: Image.network(
+                            generateAvatar(PropertyData.userList[index]['username']!)),
+                        trailing: Wrap(
+                          spacing: 0, // space between two icons
+                          children: <Widget>[
+                            IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.call,
+                                  color: ColorsClass.themeColor,
+                                )), // icon-1
+                            IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.message,
+                                  color: ColorsClass.themeColor,
+                                )), // icon-1
+                          ],
+                        ),
+                        title: Text(PropertyData.userList[index]['name']!),
+                        subtitle: Text('B-20$index'),
                       ),
-                      title: Text(PropertyData.userList[index]),
-                      subtitle: Text('B-20$index'),
-                    ),
-                  );
-                })
+                    );
+                  }),
+            )
             : const Center(child: CircularProgressIndicator()));
   }
 
