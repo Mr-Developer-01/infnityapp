@@ -212,7 +212,6 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                     builder: (context) => const UpdateProfileScreen()),
               ).then((val) {
-                print('Called Back Pressed');
                 getAllProperties();
               });
             },

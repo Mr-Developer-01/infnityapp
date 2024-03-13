@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +38,6 @@ class _WishlistPageState extends State<WishlistPage> {
       if (containsProId) {
         var filteredList =
             ids.where((element) => element['proId'] == doc.id).toList();
-        print(filteredList);
         documents.add({
           "data": doc.data(),
           "wishlistId": filteredList[0]['id'],
@@ -49,7 +50,6 @@ class _WishlistPageState extends State<WishlistPage> {
       if (containsProId) {
         var filteredList =
             ids.where((element) => element['proId'] == doc.id).toList();
-        print(filteredList);
         documents.add({
           "data": doc.data(),
           "wishlistId": filteredList[0]['id'],
@@ -62,7 +62,6 @@ class _WishlistPageState extends State<WishlistPage> {
       if (containsProId) {
         var filteredList =
             ids.where((element) => element['proId'] == doc.id).toList();
-        print(filteredList);
         documents.add({
           "data": doc.data(),
           "wishlistId": filteredList[0]['id'],
@@ -82,7 +81,6 @@ class _WishlistPageState extends State<WishlistPage> {
       });
     }
 
-    print('wishlistDataList ${wishlistDataList}');
     return documents;
   }
 
@@ -103,7 +101,6 @@ class _WishlistPageState extends State<WishlistPage> {
             .add({"id": element.id, "proId": element.data()['property_id']});
       }
     }
-    print(tempList);
     if (tempList.isNotEmpty) {
       getDataForIds(tempList);
     } else {

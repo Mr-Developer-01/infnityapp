@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tribb/screens/constant/API/call_api.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/custom_bottom_bar.dart';
 import 'package:tribb/screens/referfriends/referfriend.dart';
@@ -15,6 +18,8 @@ class ReferFriendPage extends StatefulWidget {
 }
 
 class _ReferFriendPageState extends State<ReferFriendPage> {
+  var completedReferral = 'Loading...';
+  var pandingReferral = 'Loading...';
   var referCode = '';
   void onClickMenu(MenuItemProvider item) {}
 
@@ -28,8 +33,16 @@ getReferralCode()async{
       setState(() {
         referCode = usersRef.docs[0]['referral_code'];
       });
+ var response = await CallAPIs.createPostRequest(
+        'TribbAppAPI', {'con': {"Id":usersRef.docs[0]['SF_Id']}});
+        var jsonData = jsonDecode(response);
+        setState(() {
+          completedReferral = jsonData['Completed_Referral__c'];
+          pandingReferral = jsonData['Pending_Referral__c'];
+        });
     }
 }
+
 @override
   void initState() {
     getReferralCode();
@@ -281,7 +294,7 @@ getReferralCode()async{
                                   height: 10,
                                 ),
                                 Text(
-                                  '7',
+                                  completedReferral,
                                   style: TextStyle(
                                       color: ColorsClass.themeColor,
                                       fontWeight: FontWeight.bold,
@@ -319,7 +332,7 @@ getReferralCode()async{
                                   height: 10,
                                 ),
                                 Text(
-                                  '1',
+                                 pandingReferral,
                                   style: TextStyle(
                                       color: ColorsClass.themeColor,
                                       fontWeight: FontWeight.bold,
