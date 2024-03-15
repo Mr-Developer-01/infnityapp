@@ -31,6 +31,12 @@ class _HomePageState extends State<HomePage> {
     var ultraTemp = [];
     var luxTemp = [];
     var priTemp = [];
+    setState(() {
+      ultraLuxury = null;
+      luxury = null;
+      premium = null;
+    });
+    print('Called Back method');
     final usersRef = FirebaseFirestore.instance.collection('allproperties');
     final userDoc = await usersRef.doc('propertyTypes').get();
     final ultraLuxuryData = userDoc.reference.collection('ultra_luxury');
@@ -126,48 +132,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  var projectList = [
-    {
-      "name": "CONSCIENT HINES",
-      "rating": "4.9",
-      "location": "Gurgaon",
-      "sqft": "2095 – 3395 Sq. Ft.",
-      "amount": "3.87 Cr",
-      "image":
-          "https://i.pinimg.com/564x/60/44/ed/6044edd88afec0f09dbe0c6e50df27e4.jpg",
-      "isWishListed": false
-    },
-    {
-      "name": "TRUMP TOWER",
-      "rating": "4.9",
-      "location": "Gurgaon",
-      "sqft": "3525 – 6050 Sq. Ft.",
-      "amount": "8.52 Cr",
-      "image":
-          "https://i.pinimg.com/564x/35/fc/08/35fc08f04ead397a85806147e2a9e4e6.jpg",
-      "isWishListed": false
-    },
-    {
-      "name": "MAHINDRA",
-      "rating": "4.9",
-      "location": "Gurgaon",
-      "sqft": "3106 – 5187 Sq. Ft.",
-      "amount": "5.20 Cr",
-      "image":
-          "https://i.pinimg.com/474x/1a/54/d9/1a54d98f61408e226a80506713cfea04.jpg",
-      "isWishListed": false
-    },
-    {
-      "name": "CENTRAL PARK ",
-      "rating": "4.9",
-      "location": "Gurgaon",
-      "sqft": "1065 – 1607 Sq. Ft.",
-      "amount": "1.85 Cr",
-      "image":
-          "https://i.pinimg.com/564x/ee/a8/89/eea889eab390905a6104690e2de31237.jpg",
-      "isWishListed": false
-    },
-  ];
   var offersList = [
     {
       "name": "Special offer of laptops",

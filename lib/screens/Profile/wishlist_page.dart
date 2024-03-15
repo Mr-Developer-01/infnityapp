@@ -138,7 +138,6 @@ class _WishlistPageState extends State<WishlistPage> {
     getWishlistData();
     super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -228,10 +227,11 @@ class _WishlistPageState extends State<WishlistPage> {
                                         cancelButtonText: "Cancel",
                                         color: ColorsClass.themeColor,
                                         onTapCancel: () {
-                                          Navigator.pop(context);
+                                          // Navigator.pop(context);
+                                          Navigator.of(context, rootNavigator: true).pop();
                                         },
                                         onTapConfirm: () {
-                                          Navigator.pop(context);
+                                          Navigator.of(context, rootNavigator: true).pop();
                                           removeItemFromWishlist(
                                               wishlistDataList[index]
                                                   ['wishlistId']);

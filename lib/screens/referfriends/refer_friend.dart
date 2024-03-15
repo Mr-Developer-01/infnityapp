@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tribb/screens/constant/API/call_api.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/custom_bottom_bar.dart';
+import 'package:tribb/screens/referfriends/product_claim_page.dart';
 import 'package:tribb/screens/referfriends/referfriend.dart';
 import 'package:share/share.dart';
 import 'package:popup_menu/popup_menu.dart';
@@ -18,14 +20,24 @@ class ReferFriendPage extends StatefulWidget {
 }
 
 class _ReferFriendPageState extends State<ReferFriendPage> {
+  final GlobalKey<RefreshIndicatorState> _refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   var completedReferral = 'Loading...';
   var pandingReferral = 'Loading...';
   var referCode = '';
+  var earnedPoints = 'Loading...';
+  var referpoints = 'Loading...';
   void onClickMenu(MenuItemProvider item) {}
 
   void onDismiss() {}
-getReferralCode()async{
-   final usersRef = await FirebaseFirestore.instance
+ Future<void>  getReferralCode() async {
+    setState(() {
+       completedReferral = 'Loading...';
+       pandingReferral = 'Loading...';
+       earnedPoints = 'Loading...';
+       referpoints = 'Loading...';
+    });
+    final usersRef = await FirebaseFirestore.instance
         .collection('users')
         .where("uId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
         .get();
@@ -33,21 +45,27 @@ getReferralCode()async{
       setState(() {
         referCode = usersRef.docs[0]['referral_code'];
       });
- var response = await CallAPIs.createPostRequest(
-        'TribbAppAPI', {'con': {"Id":usersRef.docs[0]['SF_Id']}});
-        var jsonData = jsonDecode(response);
-        setState(() {
-          completedReferral = jsonData['Completed_Referral__c'];
-          pandingReferral = jsonData['Pending_Referral__c'];
-        });
+      var response = await CallAPIs.createPostRequest('TribbAppAPI', {
+        'con': {"Id": usersRef.docs[0]['SF_Id']}
+      });
+      var jsonData = jsonDecode(response);
+      setState(() {
+        completedReferral = jsonData['Completed_Referral__c'];
+        pandingReferral = jsonData['Pending_Referral__c'];
+        referpoints = jsonData['Points_Per_Referral__c'].toString();
+        earnedPoints = (int.parse(jsonData['Completed_Referral__c']) *
+                int.parse(jsonData['Points_Per_Referral__c'].toString()))
+            .toString();
+      });
     }
-}
+  }
 
-@override
+  @override
   void initState() {
     getReferralCode();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,302 +78,309 @@ getReferralCode()async{
                 color: ColorsClass.themeColor, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Center(
-                child: Image.asset(
-              'assets/images/friend.png',
-              height: 150,
-            )),
-            ListTile(
-              title: Text(
-                'Refer & Earn',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: ColorsClass.themeColor,
+      body:SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child:  RefreshIndicator(
+            key: _refreshKey,
+        onRefresh: getReferralCode,
+        child: 
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Center(
+                  child: Image.asset(
+                'assets/images/friend.png',
+                height: 150,
+              )),
+              ListTile(
+                title: Text(
+                  'Refer & Earn',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: ColorsClass.themeColor,
+                  ),
+                ),
+                subtitle: Text(
+                  'Get rewarded up to $referpoints points when you refer',
+                  style: TextStyle(
+                    color: ColorsClass.themeColor,
+                  ),
                 ),
               ),
-              subtitle: Text(
-                'Get rewarded up to 1000 points when you refer',
-                style: TextStyle(
-                  color: ColorsClass.themeColor,
+              SizedBox(
+                height: 50,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  child: Row(
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            referCode != '' ? referCode : 'Loding...',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: ColorsClass.themeColor,
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: ()async {
+                                  await Clipboard.setData(ClipboardData(text: referCode));
+                              },
+                              icon: Icon(
+                                Icons.copy,
+                                color: ColorsClass.themeColor,
+                              ))
+                        ],
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40, right: 10),
+                        child: Container(
+                          // width: double.infinity,
+                          // height: 46,
+                          decoration: const BoxDecoration(
+                              // color: ColorsClass.themeColor,
+                              ),
+                          child: const Button(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 50,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  children: [
-                    Row(
+              const Divider(),
+              // const SizedBox(
+              //   height: 5,
+              // ),
+              ListTile(
+                title: Text(
+                  'Available points',
+                  style: TextStyle(
+                    color: ColorsClass.themeColor,
+                    fontSize: 20,
+                  ),
+                ),
+                subtitle: Text(
+                  earnedPoints,
+                  style: TextStyle(
+                    color: ColorsClass.themeColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    // color: Colors.grey
+                  ),
+                ),
+                trailing: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>  const ClaimedPointsPage()),
+                    );
+                  },
+                  style: ButtonStyle(
+                    shape: MaterialStateProperty.all<OutlinedBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            5), // Adjust the value as needed
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    'Redeem Points',
+                    style: TextStyle(color: ColorsClass.themeColor),
+                  ),
+                ),
+              ),
+              const Divider(),
+
+              Expanded(
+                flex: -2,
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 20, left: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          referCode != ''?referCode:'Loding...',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: ColorsClass.themeColor,
+                        Card(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 2.30,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              // color: Colors.green,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(10),
+                              // border: Border.all(color: Colors.grey)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                    'Earned Points',
+                                    style: TextStyle(
+                                      color: ColorsClass.themeColor,
+                                    ),
+                                  )),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    earnedPoints,
+                                    style: TextStyle(
+                                        color: ColorsClass.themeColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.copy,
-                              color: ColorsClass.themeColor,
-                            ))
+                        // const SizedBox(width: 5,),
+                        Card(
+                          child: Container(
+                            height: 100,
+                            width: MediaQuery.of(context).size.width / 2.30,
+                            decoration: BoxDecoration(
+                              // color: Colors.green,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(10),
+                              // border: Border.all(color: Colors.grey)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                    'Claimed Points',
+                                    style: TextStyle(
+                                      color: ColorsClass.themeColor,
+                                    ),
+                                  )),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    '0',
+                                    style: TextStyle(
+                                        color: ColorsClass.themeColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 40, right: 10),
-                      child: Container(
-                        // width: double.infinity,
-                        // height: 46,
-                        decoration: const BoxDecoration(
-                            // color: ColorsClass.themeColor,
-                            ),
-                        child: const Button(),
-                      ),
+                  ),
+                ),
+              ),
+              Expanded(
+                  flex: -1,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      right: 20,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(),
-            // const SizedBox(
-            //   height: 5,
-            // ),
-            ListTile(
-              title: Text(
-                'Available points',
-                style: TextStyle(
-                  color: ColorsClass.themeColor,
-                  fontSize: 20,
-                ),
-              ),
-              subtitle: Text(
-                '3000',
-                style: TextStyle(
-                  color: ColorsClass.themeColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  // color: Colors.grey
-                ),
-              ),
-              trailing: TextButton(
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const TestApp()),
-                  // );
-                },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<OutlinedBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          5), // Adjust the value as needed
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Card(
+                          child: Container(
+                            height: 100,
+                            width: MediaQuery.of(context).size.width / 2.30,
+                            decoration: BoxDecoration(
+                              // color: Colors.green,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(10),
+                              // border: Border.all(color: Colors.grey)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                    'Completed Referrals',
+                                    style: TextStyle(
+                                      color: ColorsClass.themeColor,
+                                    ),
+                                  )),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    completedReferral,
+                                    style: TextStyle(
+                                        color: ColorsClass.themeColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Card(
+                          child: Container(
+                            height: 100,
+                            width: MediaQuery.of(context).size.width / 2.30,
+                            decoration: BoxDecoration(
+                              // color: Colors.green,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(10),
+                              // border: Border.all(color: Colors.grey)
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                      child: Text(
+                                    'Pending Referrals',
+                                    style: TextStyle(
+                                      color: ColorsClass.themeColor,
+                                    ),
+                                  )),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    pandingReferral,
+                                    style: TextStyle(
+                                        color: ColorsClass.themeColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-                child: Text(
-                  'Redeem Points',
-                  style: TextStyle(color: ColorsClass.themeColor),
-                ),
+                  )),
+              const SizedBox(
+                height: 20,
               ),
-            ),
-            const Divider(),
-
-            Expanded(
-              flex: -2,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 20, left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Card(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 2.30,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            // color: Colors.green,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(10),
-                            // border: Border.all(color: Colors.grey)
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                    child: Text(
-                                  'Earned Points',
-                                  style: TextStyle(
-                                    color: ColorsClass.themeColor,
-                                  ),
-                                )),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  '7000',
-                                  style: TextStyle(
-                                      color: ColorsClass.themeColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      // const SizedBox(width: 5,),
-                      Card(
-                        child: Container(
-                          height: 100,
-                          width: MediaQuery.of(context).size.width / 2.30,
-                          decoration: BoxDecoration(
-                            // color: Colors.green,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(10),
-                            // border: Border.all(color: Colors.grey)
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                    child: Text(
-                                  'Claimed Points',
-                                  style: TextStyle(
-                                    color: ColorsClass.themeColor,
-                                  ),
-                                )),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  '4000',
-                                  style: TextStyle(
-                                      color: ColorsClass.themeColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              const Divider(
+                thickness: 3,
               ),
-            ),
-            Expanded(
-                flex: -1,
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 20,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Card(
-                        child: Container(
-                          height: 100,
-                          width: MediaQuery.of(context).size.width / 2.30,
-                          decoration: BoxDecoration(
-                            // color: Colors.green,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(10),
-                            // border: Border.all(color: Colors.grey)
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                    child: Text(
-                                  'Completed Referrals',
-                                  style: TextStyle(
-                                    color: ColorsClass.themeColor,
-                                  ),
-                                )),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  completedReferral,
-                                  style: TextStyle(
-                                      color: ColorsClass.themeColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        child: Container(
-                          height: 100,
-                          width: MediaQuery.of(context).size.width / 2.30,
-                          decoration: BoxDecoration(
-                            // color: Colors.green,
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(10),
-                            // border: Border.all(color: Colors.grey)
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                    child: Text(
-                                  'Pending Referrals',
-                                  style: TextStyle(
-                                    color: ColorsClass.themeColor,
-                                  ),
-                                )),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                 pandingReferral,
-                                  style: TextStyle(
-                                      color: ColorsClass.themeColor,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-            const SizedBox(
-              height: 20,
-            ),
-            const Divider(
-              thickness: 3,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
+              const SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: const CustomNavBar(),

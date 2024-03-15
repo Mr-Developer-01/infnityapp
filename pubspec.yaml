@@ -71,6 +71,7 @@ dependencies:
   syncfusion_flutter_sliders: ^24.2.8
   another_xlider: ^3.0.2
   panara_dialogs: ^0.1.4
+  pull_to_refresh_flutter3: ^2.0.2
 
 dev_dependencies:
   flutter_test:
