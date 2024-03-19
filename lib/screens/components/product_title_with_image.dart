@@ -34,7 +34,7 @@ class ProductTitleWithImage extends StatelessWidget {
                   children: [
                      TextSpan(text: "Price\n",style: TextStyle(color: ColorsClass.themeColor)),
                     TextSpan(
-                      text: "${product['price'] * 50} Points",
+                      text: "${product['price'].toInt() * 50} Points",
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall!

@@ -48,64 +48,123 @@ class _DocumentPageState extends State<DocumentPage> {
       ),
       extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
-        child: Stack(
-          children: [
-            Container(
-              height: 500,
-              decoration:  BoxDecoration(
-                image: DecorationImage(
-                  // opacity: 0.4,
-                  image: AssetImage(
-                    Staticimages.bgImage,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+          ),
+          child: Stack(
+            children: [
+              Container(
+                height: 490,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    // opacity: 0.4,
+                    image: AssetImage(
+                      Staticimages.bgImage,
+                    ),
+                    fit: BoxFit.fill,
                   ),
-                  fit: BoxFit.fill,
                 ),
               ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: 500,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 150),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Expanded(
-                        flex: -2,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 10, left: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      // boxShadow: [
-                                      //     new BoxShadow(
-                                      //       color: Colors.grey,
-                                      //       blurRadius: 1.0,
-                                      //     ),
-        
-                                      //   ],
-                                      shape: BoxShape.rectangle,
-                                      borderRadius: BorderRadius.circular(10),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width * 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 150),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Expanded(
+                          flex: -2,
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(right: 10, left: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        // boxShadow: [
+                                        //     new BoxShadow(
+                                        //       color: Colors.grey,
+                                        //       blurRadius: 1.0,
+                                        //     ),
+
+                                        //   ],
+                                        shape: BoxShape.rectangle,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Card(
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2.30,
+                                          height: 150,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            // border: Border.all(color: Colors.grey)
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Flexible(
+                                                    child: Image.asset(
+                                                  'assets/images/home-loan.png',
+                                                  color: ColorsClass.themeColor,
+                                                  height: 80,
+                                                )),
+                                                Text(
+                                                  'Home Loan',
+                                                  style: TextStyle(
+                                                    color:
+                                                        ColorsClass.themeColor,
+                                                    fontSize: 15,
+                                                    fontFamily: "RALEWAY",
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            HomeLoan(homeLoanDoc, 'Home Loan'),
+                                      ));
+                                    },
+                                  ),
+                                  // const SizedBox(width: 5,),
+                                  GestureDetector(
                                     child: Card(
                                       child: Container(
-                                        width: MediaQuery.of(context).size.width /
-                                            2.30,
                                         height: 150,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2.30,
                                         decoration: BoxDecoration(
+                                          // color: Colors.green,
                                           shape: BoxShape.rectangle,
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           // border: Border.all(color: Colors.grey)
                                         ),
                                         child: Padding(
@@ -116,12 +175,12 @@ class _DocumentPageState extends State<DocumentPage> {
                                             children: [
                                               Flexible(
                                                   child: Image.asset(
-                                                'assets/images/home-loan.png',
+                                                'assets/images/booking-form.png',
                                                 color: ColorsClass.themeColor,
                                                 height: 80,
                                               )),
                                               Text(
-                                                'Home Loan',
+                                                'Booking Forms',
                                                 style: TextStyle(
                                                   color: ColorsClass.themeColor,
                                                   fontSize: 15,
@@ -133,173 +192,136 @@ class _DocumentPageState extends State<DocumentPage> {
                                         ),
                                       ),
                                     ),
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) => HomeLoan(
+                                            bookingDoc, 'Booking Forms'),
+                                      ));
+                                    },
                                   ),
-                                  onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          HomeLoan(homeLoanDoc, 'Home Loan'),
-                                    ));
-                                  },
-                                ),
-                                // const SizedBox(width: 5,),
-                                GestureDetector(
-                                  child: Card(
-                                    child: Container(
-                                      height: 150,
-                                      width: MediaQuery.of(context).size.width /
-                                          2.30,
-                                      decoration: BoxDecoration(
-                                        // color: Colors.green,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
-                                        // border: Border.all(color: Colors.grey)
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Flexible(
-                                                child: Image.asset(
-                                              'assets/images/booking-form.png',
-                                              color: ColorsClass.themeColor,
-                                              height: 80,
-                                            )),
-                                            Text(
-                                              'Booking Forms',
-                                              style: TextStyle(
-                                                color: ColorsClass.themeColor,
-                                                fontSize: 15,
-                                                fontFamily: "RALEWAY",
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          HomeLoan(bookingDoc, 'Booking Forms'),
-                                    ));
-                                  },
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        flex: -2,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                right: 10, left: 10, top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  child: Card(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width /
-                                          2.30,
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                        // color: Colors.green,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
-                                        // border: Border.all(color: Colors.grey)
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Flexible(
-                                                child: Image.asset(
-                                              'assets/images/sdr-form.png',
-                                              color: ColorsClass.themeColor,
-                                              height: 80,
-                                            )),
-                                            Text(
-                                              'SDR Forms',
-                                              style: TextStyle(
+                        Expanded(
+                          flex: -2,
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  right: 10, left: 10, top: 10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    child: Card(
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2.30,
+                                        height: 150,
+                                        decoration: BoxDecoration(
+                                          // color: Colors.green,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          // border: Border.all(color: Colors.grey)
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                  child: Image.asset(
+                                                'assets/images/sdr-form.png',
                                                 color: ColorsClass.themeColor,
-                                                fontSize: 15,
-                                                fontFamily: "RALEWAY",
+                                                height: 80,
+                                              )),
+                                              Text(
+                                                'SDR Forms',
+                                                style: TextStyle(
+                                                  color: ColorsClass.themeColor,
+                                                  fontSize: 15,
+                                                  fontFamily: "RALEWAY",
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            HomeLoan(sdrDoc, 'SDR Forms'),
+                                      ));
+                                    },
                                   ),
-                                  onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          HomeLoan(sdrDoc, 'SDR Forms'),
-                                    ));
-                                  },
-                                ),
-                                // const SizedBox(width: 5,),
-                                GestureDetector(
-                                  child: Card(
-                                    child: Container(
-                                      height: 150,
-                                      width: MediaQuery.of(context).size.width /
-                                          2.30,
-                                      decoration: BoxDecoration(
-                                        // color: Colors.green,
-                                        shape: BoxShape.rectangle,
-                                        borderRadius: BorderRadius.circular(10),
-                                        // border: Border.all(color: Colors.grey)
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Flexible(
-                                                child: Image.asset(
-                                              'assets/images/possession-form.png',
-                                              color: ColorsClass.themeColor,
-                                              height: 80,
-                                            )),
-                                            Text(
-                                              'Possession Forms',
-                                              style: TextStyle(
+                                  // const SizedBox(width: 5,),
+                                  GestureDetector(
+                                    child: Card(
+                                      child: Container(
+                                        height: 150,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                2.30,
+                                        decoration: BoxDecoration(
+                                          // color: Colors.green,
+                                          shape: BoxShape.rectangle,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          // border: Border.all(color: Colors.grey)
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                  child: Image.asset(
+                                                'assets/images/possession-form.png',
                                                 color: ColorsClass.themeColor,
-                                                fontSize: 15,
-                                                fontFamily: "RALEWAY",
+                                                height: 80,
+                                              )),
+                                              Text(
+                                                'Possession Forms',
+                                                style: TextStyle(
+                                                  color: ColorsClass.themeColor,
+                                                  fontSize: 15,
+                                                  fontFamily: "RALEWAY",
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) => HomeLoan(
+                                            possessionDoc, 'Possession Forms'),
+                                      ));
+                                    },
                                   ),
-                                  onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => HomeLoan(
-                                          possessionDoc, 'Possession Forms'),
-                                    ));
-                                  },
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

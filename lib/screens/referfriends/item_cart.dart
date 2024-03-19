@@ -2,13 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:tribb/screens/constant/colors.dart';
-import 'package:tribb/screens/constant/constant.dart';
-
 
 class ItemCard extends StatelessWidget {
   const ItemCard({super.key, required this.product, required this.press});
 
-  final  product;
+  final product;
   final VoidCallback press;
 
   @override
@@ -18,28 +16,39 @@ class ItemCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Expanded(
+          SizedBox(
+            height: 100,
             child: Container(
-              padding: const EdgeInsets.all(kDefaultPaddin),
-              decoration: BoxDecoration(
-                // color: ColorsClass.themeColor.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(16),
+              // padding: const EdgeInsets.all(kDefaultPaddin),
+              decoration: const BoxDecoration(
+                  // color: Colors.red,
+                  // color: ColorsClass.themeColor.withOpacity(0.5),
+                  // borderRadius: BorderRadius.circular(16),
+                  ),
+              child: Center(
+                child: Image.network(
+                  product['image'],
+                  // width: 100,
+                ),
               ),
-              child: Image.network(product['image']),
-             
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: kDefaultPaddin / 4),
+            padding: const EdgeInsets.symmetric(),
             child: Text(
-              // products is out demo list
+              
               product['title'],
-              style:  TextStyle(color: ColorsClass.themeColor.withOpacity(0.5),),
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: ColorsClass.themeColor.withOpacity(0.5),
+              ),
             ),
           ),
           Text(
-            "${product['price'] * 50} Points",
-            style:  TextStyle(fontWeight: FontWeight.bold,color: ColorsClass.themeColor),
+            "${product['price'].toInt() * 50} Points",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, color: ColorsClass.themeColor),
           )
         ],
       ),

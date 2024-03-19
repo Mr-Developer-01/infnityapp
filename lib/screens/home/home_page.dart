@@ -36,7 +36,6 @@ class _HomePageState extends State<HomePage> {
       luxury = null;
       premium = null;
     });
-    print('Called Back method');
     final usersRef = FirebaseFirestore.instance.collection('allproperties');
     final userDoc = await usersRef.doc('propertyTypes').get();
     final ultraLuxuryData = userDoc.reference.collection('ultra_luxury');

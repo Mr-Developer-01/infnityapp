@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tribb/screens/constant/API/call_api.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/custom_bottom_bar.dart';
@@ -22,20 +23,23 @@ class ReferFriendPage extends StatefulWidget {
 class _ReferFriendPageState extends State<ReferFriendPage> {
   final GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  var completedReferral = 'Loading...';
-  var pandingReferral = 'Loading...';
+  var completedReferral = '0';
+  var pandingReferral = '0';
   var referCode = '';
-  var earnedPoints = 'Loading...';
-  var referpoints = 'Loading...';
+  var earnedPoints = '0';
+  var referpoints = '0';
+  bool isLoadingMode = false;
   void onClickMenu(MenuItemProvider item) {}
 
   void onDismiss() {}
  Future<void>  getReferralCode() async {
+  final SharedPreferences referGlobal = await SharedPreferences.getInstance();
     setState(() {
-       completedReferral = 'Loading...';
-       pandingReferral = 'Loading...';
-       earnedPoints = 'Loading...';
-       referpoints = 'Loading...';
+      isLoadingMode = true;
+       completedReferral = '0';
+       pandingReferral = '0';
+       earnedPoints = '0';
+       referpoints = '0';
     });
     final usersRef = await FirebaseFirestore.instance
         .collection('users')
@@ -46,16 +50,22 @@ class _ReferFriendPageState extends State<ReferFriendPage> {
         referCode = usersRef.docs[0]['referral_code'];
       });
       var response = await CallAPIs.createPostRequest('TribbAppAPI', {
-        'con': {"Id": usersRef.docs[0]['SF_Id']}
+        'con': {"Id": usersRef.docs[0]['SF_Id'],"FirstName":"Contact Record"}
       });
       var jsonData = jsonDecode(response);
       setState(() {
-        completedReferral = jsonData['Completed_Referral__c'];
-        pandingReferral = jsonData['Pending_Referral__c'];
-        referpoints = jsonData['Points_Per_Referral__c'].toString();
-        earnedPoints = (int.parse(jsonData['Completed_Referral__c']) *
-                int.parse(jsonData['Points_Per_Referral__c'].toString()))
+        completedReferral = jsonData[0]['Completed_Referral__c'];
+        pandingReferral = jsonData[0]['Pending_Referral__c'];
+        referpoints = jsonData[0]['Points_Per_Referral__c'].toString();
+        earnedPoints = (int.parse(jsonData[0]['Completed_Referral__c']) *
+                int.parse(jsonData[0]['Points_Per_Referral__c'].toString()))
             .toString();
+            isLoadingMode = false;
+      });
+      referGlobal.setInt("availablePointds", int.parse(earnedPoints));
+    }else{
+      setState(() {
+        isLoadingMode = false;
       });
     }
   }
@@ -78,7 +88,7 @@ class _ReferFriendPageState extends State<ReferFriendPage> {
                 color: ColorsClass.themeColor, fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
-      body:SingleChildScrollView(
+      body:!isLoadingMode?SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
           child:  RefreshIndicator(
             key: _refreshKey,
@@ -382,6 +392,8 @@ class _ReferFriendPageState extends State<ReferFriendPage> {
             ],
           ),
         ),
+      ):const Center(
+        child: CircularProgressIndicator(),
       ),
       bottomNavigationBar: const CustomNavBar(),
     );

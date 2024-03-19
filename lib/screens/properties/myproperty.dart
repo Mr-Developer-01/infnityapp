@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/properties/property_details.dart';
@@ -14,7 +15,7 @@ class Myproperty extends StatefulWidget {
 }
 
 class _MypropertyState extends State<Myproperty> {
-  var propertydata;
+  var propertydata = [];
   var projectList = [
     {
       "name": "CONSCIENT HINES ELEVATE",
@@ -54,24 +55,20 @@ class _MypropertyState extends State<Myproperty> {
     },
   ];
   getPropertyData() async {
+    var tempDataList = [];
     try {
-    
-    CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection('properties');
-    QuerySnapshot querySnapshot = await collectionRef.get();
-    final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    setState(() {
-      propertydata = allData;
-    });
     CollectionReference reference =
         FirebaseFirestore.instance.collection('properties');
     reference.snapshots().listen((querySnapshot) {
-      for (var change in querySnapshot.docChanges) {
         final allData = querySnapshot.docs.map((doc) => doc.data()).toList();
         setState(() {
-          propertydata = allData;
+          tempDataList = allData;
         });
-       
+        for (var element in tempDataList) {
+        if (element['user-id'].toString() ==
+            (FirebaseAuth.instance.currentUser!.uid).toString()) {
+          propertydata.add(element);
+        }
       }
     });
       

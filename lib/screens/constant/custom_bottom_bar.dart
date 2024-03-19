@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tribb/screens/constant/colors.dart';
-import 'package:tribb/screens/home/contact.dart';
+import 'package:tribb/screens/support/contact.dart';
 import 'package:tribb/screens/documents/document_page.dart';
 import 'package:tribb/screens/home/home_page.dart';
 import 'package:tribb/screens/properties/myproperty.dart';

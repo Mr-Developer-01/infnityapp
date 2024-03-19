@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:tribb/screens/constant/API/call_api.dart';
 import 'package:tribb/screens/constant/colors.dart';
 
 class TrackIssuesForm extends StatefulWidget {
@@ -10,13 +16,9 @@ class TrackIssuesForm extends StatefulWidget {
 }
 
 class _TrackIssuesState extends State<TrackIssuesForm> {
+
   var sortByList = ['Case Number', 'Status', 'Name'];
   var caseList = [
-    {'name': '12340099', 'status': 'Closed', 'date': '2/2/2023'},
-    {'name': '56780088', 'status': 'Closed', 'date': '2/2/2023'},
-    {'name': '90120077', 'status': 'open', 'date': '2/2/2023'},
-    {'name': '90120066', 'status': 'open', 'date': '2/2/2023'},
-    {'name': '90120055', 'status': 'open', 'date': '2/2/2023'}
   ];
   var showListView = true;
   // ignore: prefer_typing_uninitialized_variables
@@ -25,14 +27,53 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
   var arrow;
   // ignore: prefer_typing_uninitialized_variables
   var propertyText;
-
+  bool isLoadingMode = false;
+  getAllcase()async{
+    setState(() {
+      isLoadingMode = true;
+    });
+  final usersRef = await FirebaseFirestore.instance
+        .collection('users')
+        .where("uId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (usersRef.docs.isNotEmpty) {
+      var response = await CallAPIs.createPostRequest('TribbAppAPI', {
+        'con': {"Id": usersRef.docs[0]['SF_Id'],"FirstName":"Case Record"}
+      });
+      var jsonData = jsonDecode(response);
+      for (var element in jsonData) {
+        DateTime originalDate = DateTime.parse(element['CreatedDate']);
+        String formattedDate = DateFormat('dd/MM/yyyy').format(originalDate);
+        var listElement = {
+        "name":element['CaseNumber'],
+        "status":element['Status'],
+        "date":formattedDate,
+        "subject":element['Subject'],
+        "description":element['Description'],
+      };
+      setState(() {
+        isLoadingMode = false;
+      });
+      caseList.add(listElement);
+      }
+  }else{
+    setState(() {
+        isLoadingMode = false;
+      });
+  }
+  }
+@override
+  void initState() {
+    getAllcase();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       // height: MediaQuery.of(context).size.height / 1.1,
       width: MediaQuery.of(context).size.width,
       child: showListView == true
-          ? Padding(
+          ? !isLoadingMode?caseList.isEmpty?const Center(child: Text('No Record to display'),): Padding(
               padding: const EdgeInsets.all(18.0),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height / 1.7,
@@ -127,11 +168,11 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
                                 children: [
                                   Flexible(
                                     child: Align(
-                                      alignment: Alignment.center,
+                                      alignment: Alignment.centerLeft,
                                       child: Padding(
                                         padding: const EdgeInsets.only(
                                            left: 25, bottom: 20),
-                                        child: Text("This is the most important part of the case report; the part that will convince the journal that the case is publication worthy.",style: TextStyle(color: ColorsClass.themeColor,),),
+                                        child: Text(caseList[index]['subject'],style: TextStyle(color: ColorsClass.themeColor,),),
                                       ),
                                     ),
                                   ),
@@ -146,7 +187,7 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
                       );
                     }),
               ),
-            )
+            ):const Center(child: CircularProgressIndicator(),)
           : Padding(
               padding: const EdgeInsets.only(top: 20),
               child: Column(
@@ -191,12 +232,12 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
                     padding: const EdgeInsets.only(
                       left: 30,
                     ),
-                    child: Text("Concern Details",style: TextStyle(color: ColorsClass.themeColor,),),
+                    child: Text("Subject",style: TextStyle(color: ColorsClass.themeColor,),),
                   ),
                    Padding(
-                    padding: const EdgeInsets.only(left: 30, top: 10),
+                    padding: const EdgeInsets.only(left: 32, top: 10),
                     child: Text(
-                      "BCC testing mail",
+                      caseDetail['subject'],
                       style: TextStyle(
                         color: ColorsClass.themeColor,
                         fontWeight: FontWeight.bold,
@@ -215,35 +256,35 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
                           minHeight: 150, minWidth: 300),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: ColorsClass.themeColor,
-                        ),
+                        // border: Border.all(
+                        //   color: ColorsClass.themeColor,
+                        // ),
                       ),
                       child:  Padding(
-                          padding: const EdgeInsets.only(left: 20, top: 20,right: 20),
-                          child: Text("This is the most important part of the case report; the part that will convince the journal that the case is publication worthy.",style: TextStyle(color: ColorsClass.themeColor,),)),
+                          padding: const EdgeInsets.only( top: 20,right: 20),
+                          child: Text(caseDetail['description'],style: TextStyle(color: ColorsClass.themeColor,),)),
                     ),
                   ),
                   const SizedBox(
                     height: 30,
                   ),
-                  Padding(
-                  padding: const EdgeInsets.only(
-                      top: 8.0, left: 8.0, right: 8.0, bottom: 0),
-                  child: Center(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: ColorsClass.themeColor,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: CupertinoButton(
-                        color: ColorsClass.themeColor,
-                        onPressed: () {
-                        },
-                        child: const Text('Write A Feedback'),
-                      ),
-                    ),
-                  ),
-                ),
+                //   Padding(
+                //   padding: const EdgeInsets.only(
+                //       top: 8.0, left: 8.0, right: 8.0, bottom: 0),
+                //   child: Center(
+                //     child: Container(
+                //       decoration: BoxDecoration(
+                //           color: ColorsClass.themeColor,
+                //           borderRadius: BorderRadius.circular(8)),
+                //       child: CupertinoButton(
+                //         color: ColorsClass.themeColor,
+                //         onPressed: () {
+                //         },
+                //         child: const Text('Write A Feedback'),
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 ],
               ),
             ),
