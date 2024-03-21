@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, prefer_typing_uninitialized_variables, non_constant_identifier_names
 
 import 'dart:convert';
 import 'dart:io';
@@ -106,7 +106,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Future<Null> _cropImage(XFile imageFile) async {
+  Future<void> _cropImage(XFile imageFile) async {
     CroppedFile? croppedFile = await ImageCropper.platform.cropImage(
         sourcePath: imageFile.path,
         aspectRatioPresets: Platform.isAndroid

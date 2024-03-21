@@ -1,17 +1,15 @@
-// ignore_for_file: prefer_typing_uninitialized_variables, empty_catches
+// ignore_for_file: prefer_typing_uninitialized_variables, empty_catches, non_constant_identifier_names
 
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:tribb/screens/Profile/profile_home_page.dart';
 import 'package:tribb/screens/constant/test.dart';
 import 'package:tribb/screens/moreOptions/option_home_page.dart';
 import 'package:tribb/screens/properties/property_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:tribb/screens/Profile/edit_profile_page.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/referfriends/refer_friend.dart';
 // import 'package:motion_toast/motion_toast.dart';

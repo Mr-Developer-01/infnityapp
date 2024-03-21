@@ -1,12 +1,10 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names, must_be_immutable, use_key_in_widget_constructors, prefer_typing_uninitialized_variables
 
 import 'dart:convert';
-import 'package:photo_view/photo_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tribb/screens/Profile/edit_profile_page.dart';
 import 'package:tribb/screens/Profile/wishlist_page.dart';

@@ -79,7 +79,7 @@ class TextFeildWidget extends StatelessWidget {
     //return type is OutlineInputBorder
     return OutlineInputBorder(
         //Outline border type for TextFeild
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
         borderSide: BorderSide(
           color: ColorsClass.fillColor,
           width: 3,
@@ -88,7 +88,7 @@ class TextFeildWidget extends StatelessWidget {
 
   OutlineInputBorder myfocusborder() {
     return OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20)),
+        borderRadius: const BorderRadius.all(Radius.circular(20)),
         borderSide: BorderSide(
           color: ColorsClass.themeColor,
           width: 3,

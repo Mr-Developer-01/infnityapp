@@ -1,9 +1,5 @@
 //import 'dart:convert';
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -448,7 +444,7 @@ class SupportFormState extends State<SupportForm> {
                         borderSide: BorderSide(color: Colors.transparent),
                       ),
                       hintText: 'Description',
-                      contentPadding: EdgeInsets.only(left: 17),
+                      contentPadding: const EdgeInsets.only(left: 17),
                       //labelText: 'Description',
                       hintStyle: TextStyle(
                         color: ColorsClass.themeColor,
