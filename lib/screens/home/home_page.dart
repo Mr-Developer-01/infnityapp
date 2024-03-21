@@ -5,12 +5,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:tribb/screens/Profile/profile_home_page.dart';
 import 'package:tribb/screens/constant/test.dart';
 import 'package:tribb/screens/moreOptions/option_home_page.dart';
 import 'package:tribb/screens/properties/property_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-import 'package:tribb/screens/Profile/profile_page.dart';
+import 'package:tribb/screens/Profile/edit_profile_page.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/referfriends/refer_friend.dart';
 // import 'package:motion_toast/motion_toast.dart';
@@ -27,6 +28,9 @@ class _HomePageState extends State<HomePage> {
   var ultraLuxury;
   var luxury;
   var premium;
+  var base64Image;
+  var profile_pic =
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfBUN-KgxbARoHkAW0nmjoKhGuRSy3flEQMeulh4TRCGNuFv5LJh7MTmA3sV1MkIr9uGk&usqp=CAU';
   Future<void> getAllProperties() async {
     var ultraTemp = [];
     var luxTemp = [];
@@ -124,10 +128,23 @@ class _HomePageState extends State<HomePage> {
         textColor: Colors.white,
         fontSize: 16.0);
   }
-
+ getUserDetails() async {
+    final usersRef = await FirebaseFirestore.instance
+        .collection('users')
+        .where("uId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+        .get();
+    if (usersRef.docs.isNotEmpty) {
+      setState(() {
+        base64Image = usersRef.docs[0]['profile_pic'];
+      });
+    } else {
+     
+    }
+  }
   @override
   void initState() {
     getAllProperties();
+    getUserDetails();
     super.initState();
   }
 
@@ -173,16 +190,19 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const UpdateProfileScreen()),
+                    builder: (context) => const ProfileHomePage()),
               ).then((val) {
                 getAllProperties();
               });
             },
-            child: const GFAvatar(
-              backgroundImage: AssetImage(
-                "assets/images/userImage.jpg",
-              ),
-            ),
+            child:  base64Image == null
+                          ? CircleAvatar(
+                              backgroundImage: NetworkImage(profile_pic),
+                            )
+                          : CircleAvatar(
+                              backgroundImage: MemoryImage(
+                                  const Base64Decoder().convert(base64Image)),
+                            ),
           ),
         ),
         actions: [
@@ -310,7 +330,7 @@ class _HomePageState extends State<HomePage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const UpdateProfileScreen()),
+                                        const ProfileHomePage()),
                               );
                             },
                             icon: Icons.person,
