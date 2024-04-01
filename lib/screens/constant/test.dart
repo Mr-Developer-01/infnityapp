@@ -1,10 +1,12 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
 
+import 'dart:io';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:getwidget/getwidget.dart';
-
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
+import 'package:tribb/screens/constant/toast_message.dart';
 
 class MyHomePageChart extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
@@ -18,6 +20,18 @@ class _MyHomePageState extends State<MyHomePageChart> {
   final GlobalKey<SfSignaturePadState> _signaturePadKey = GlobalKey();
   Color penColor = Colors.black;
   double penSize = 4;
+
+  _saveImage(Uint8List bytes) async {
+    try {
+      final file = File('/storage/emulated/0/Download/signature.png');
+      //  var savePath = '/storage/emulated/0/Download/$filename';/
+    await file.writeAsBytes(bytes,mode: FileMode.write);
+     ToastMessages.successMessage(context, 'Image Saved Successfully!');
+    } catch (e) { 
+      ToastMessages.errorMessage(context, "Error ${e.toString()}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,14 +52,14 @@ class _MyHomePageState extends State<MyHomePageChart> {
                       LengthLimitingTextInputFormatter(
                         2,
                       ),
-                       FilteringTextInputFormatter.digitsOnly
+                      FilteringTextInputFormatter.digitsOnly
                     ],
                     onChanged: (value) {
                       if (value.isNotEmpty) {
                         setState(() {
                           penSize = double.parse(value);
                         });
-                      }else{
+                      } else {
                         penSize = 5;
                       }
                     },
@@ -70,7 +84,7 @@ class _MyHomePageState extends State<MyHomePageChart> {
                   height: 20,
                 ),
                 Row(
-                  mainAxisAlignment:MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
                         onPressed: () {
@@ -78,11 +92,15 @@ class _MyHomePageState extends State<MyHomePageChart> {
                         },
                         child: const Text('Clear')),
                     TextButton(
-                        onPressed: () async{
-                          await _signaturePadKey.currentState!.toImage();
+                        onPressed: () async {
+                          ui.Image image =
+                              await _signaturePadKey.currentState!.toImage();
+                          ByteData? byteData = await image.toByteData(
+                              format: ui.ImageByteFormat.png);
+                          Uint8List pngBytes = byteData!.buffer.asUint8List();
+                          await _saveImage(pngBytes);
                         },
                         child: const Text('Save')),
-                        
                   ],
                 ),
                 const SizedBox(

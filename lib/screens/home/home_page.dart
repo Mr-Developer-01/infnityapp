@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/referfriends/refer_friend.dart';
+import 'package:tribb/screens/search-property/search_home_page.dart';
 // import 'package:motion_toast/motion_toast.dart';
 
 class HomePage extends StatefulWidget {
@@ -91,13 +92,13 @@ class _HomePageState extends State<HomePage> {
         "WishListedid": jsoData['id'],
       });
     }
-   if(mounted){
-     setState(() {
-      ultraLuxury = ultraTemp;
-      luxury = luxTemp;
-      premium = priTemp;
-    });
-   }
+    if (mounted) {
+      setState(() {
+        ultraLuxury = ultraTemp;
+        luxury = luxTemp;
+        premium = priTemp;
+      });
+    }
   }
 
   Future<Object> getWishLitedProperties(var propid) async {
@@ -126,7 +127,8 @@ class _HomePageState extends State<HomePage> {
         textColor: Colors.white,
         fontSize: 16.0);
   }
- getUserDetails() async {
+
+  getUserDetails() async {
     final usersRef = await FirebaseFirestore.instance
         .collection('users')
         .where("uId", isEqualTo: FirebaseAuth.instance.currentUser!.uid)
@@ -135,10 +137,9 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         base64Image = usersRef.docs[0]['profile_pic'];
       });
-    } else {
-     
-    }
+    } else {}
   }
+
   @override
   void initState() {
     getAllProperties();
@@ -190,17 +191,18 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                     builder: (context) => const ProfileHomePage()),
               ).then((val) {
+                getUserDetails();
                 getAllProperties();
               });
             },
-            child:  base64Image == null
-                          ? CircleAvatar(
-                              backgroundImage: NetworkImage(profile_pic),
-                            )
-                          : CircleAvatar(
-                              backgroundImage: MemoryImage(
-                                  const Base64Decoder().convert(base64Image)),
-                            ),
+            child: base64Image == null
+                ? CircleAvatar(
+                    backgroundImage: NetworkImage(profile_pic),
+                  )
+                : CircleAvatar(
+                    backgroundImage:
+                        MemoryImage(const Base64Decoder().convert(base64Image)),
+                  ),
           ),
         ),
         actions: [
@@ -637,26 +639,27 @@ class _HomePageState extends State<HomePage> {
                                                       .delete();
                                                   showToastMessage(
                                                       'Property removed from wish list');
-                                                 if(mounted){
-                                                   setState(() {
-                                                    if (data['type'] ==
-                                                        'Ultra Luxury') {
-                                                      ultraLuxury[data['index']]
-                                                              ['isWishListed'] =
-                                                          false;
-                                                    } else if (data['type'] ==
-                                                        'Luxury') {
-                                                      luxury[data['index']]
-                                                              ['isWishListed'] =
-                                                          false;
-                                                    } else if (data['type'] ==
-                                                        'Premium') {
-                                                      premium[data['index']]
-                                                              ['isWishListed'] =
-                                                          false;
-                                                    }
-                                                  });
-                                                 }
+                                                  if (mounted) {
+                                                    setState(() {
+                                                      if (data['type'] ==
+                                                          'Ultra Luxury') {
+                                                        ultraLuxury[data[
+                                                                    'index']][
+                                                                'isWishListed'] =
+                                                            false;
+                                                      } else if (data['type'] ==
+                                                          'Luxury') {
+                                                        luxury[data['index']][
+                                                                'isWishListed'] =
+                                                            false;
+                                                      } else if (data['type'] ==
+                                                          'Premium') {
+                                                        premium[data['index']][
+                                                                'isWishListed'] =
+                                                            false;
+                                                      }
+                                                    });
+                                                  }
                                                 } catch (e) {}
                                               } else {
                                                 final newDocRef =
@@ -668,8 +671,8 @@ class _HomePageState extends State<HomePage> {
                                                       .currentUser!
                                                       .uid,
                                                 });
-                                                 if(mounted){
-                                                   setState(() {
+                                                if (mounted) {
+                                                  setState(() {
                                                     if (data['type'] ==
                                                         'Ultra Luxury') {
                                                       ultraLuxury[data['index']]
@@ -696,7 +699,7 @@ class _HomePageState extends State<HomePage> {
                                                           newDocRef.id;
                                                     }
                                                   });
-                                                 }
+                                                }
                                                 showToastMessage(
                                                     'Property added to wish list');
                                                 // });
@@ -800,31 +803,41 @@ class SearchBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        prefixIcon: Icon(
-          Icons.search,
-          grade: 10,
-          weight: 10,
-          color: ColorsClass.themeColor,
-        ), // Leading icon
-        suffixIcon: Icon(Icons.tune_rounded,
-            color: ColorsClass.themeColor), // Trailing icon
-        hintText: 'Search',
-
-        hintStyle: TextStyle(
-          color: ColorsClass.themeColor,
-        ),
-        border: OutlineInputBorder(
-          borderSide: BorderSide.none,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        filled: true,
-        fillColor: ColorsClass.fillColor,
-      ),
-      onChanged: (value) {
-        //print('Search text: $value');
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SearchProprties()),
+        );
       },
+      child: TextField(
+        enabled: false,
+        // readOnly: true,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.search,
+            grade: 10,
+            weight: 10,
+            color: ColorsClass.themeColor,
+          ), // Leading icon
+          // suffixIcon: Icon(Icons.tune_rounded,
+          //     color: ColorsClass.themeColor), // Trailing icon
+          hintText: 'Search',
+
+          hintStyle: TextStyle(
+            color: ColorsClass.themeColor,
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          filled: true,
+          fillColor: ColorsClass.fillColor,
+        ),
+        onChanged: (value) {
+          //print('Search text: $value');
+        },
+      ),
     );
   }
 }

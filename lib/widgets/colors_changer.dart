@@ -130,6 +130,7 @@ class _ColorChangerState extends State<ColorChanger> {
             const Spacer(),
             GFButton(
                 fullWidthButton: true,
+                color: ColorsClass.themeColor,
                 onPressed: () async {
                   ColorsClass.setColor(groupValue);
                   SharedPreferences setIdx =

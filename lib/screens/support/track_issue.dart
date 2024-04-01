@@ -204,7 +204,7 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.only(top:30,left: 30,bottom: 30),
                     child: Row(
                       children: [
                          Text("Case No. ",style: TextStyle(color: ColorsClass.themeColor,),),
@@ -234,7 +234,9 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
                     child: Text("Subject",style: TextStyle(color: ColorsClass.themeColor,),),
                   ),
                    Padding(
-                    padding: const EdgeInsets.only(left: 32, top: 10),
+                    padding: const EdgeInsets.only(
+                      left: 30, top: 10
+                      ),
                     child: Text(
                       caseDetail['subject'],
                       style: TextStyle(
@@ -244,12 +246,15 @@ class _TrackIssuesState extends State<TrackIssuesForm> {
                     ),
                   ),
                    Padding(
-                    padding: const EdgeInsets.only(left: 30, top: 30),
+                    padding: const EdgeInsets.only(
+                      left: 30, top: 30
+                    ),
                     child: Text("Description",style: TextStyle(color: ColorsClass.themeColor,),),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                        left: 30.0, top: 5, right: 40),
+                        left: 30,  right: 40
+                        ),
                     child: Container(
                       constraints: const BoxConstraints(
                           minHeight: 150, minWidth: 300),

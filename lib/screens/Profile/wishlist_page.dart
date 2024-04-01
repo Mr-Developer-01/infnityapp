@@ -8,6 +8,7 @@ import 'package:getwidget/components/button/gf_button_bar.dart';
 import 'package:getwidget/components/card/gf_card.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
+import 'package:tribb/screens/properties/property_details.dart';
 
 class WishlistPage extends StatefulWidget {
   const WishlistPage({super.key});
@@ -155,97 +156,107 @@ class _WishlistPageState extends State<WishlistPage> {
                 : ListView.builder(
                     itemCount: wishlistDataList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return GFCard(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 5),
-                        content: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // mainAxisAlignment: MainAxisAlignment.,
-                          children: [
-                            Container(
-                              height: 90,
-                              width: 90,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                        wishlistDataList[index]['data']
-                                            ['image']!,
-                                      ),
-                                      fit: BoxFit.fill)),
-                            ),
-                            const SizedBox(
-                              width: 30,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  wishlistDataList[index]['data']['title']
-                                      .toString(),
-                                  style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  wishlistDataList[index]['data']['location']
-                                      .toString(),
-                                  style: const TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(wishlistDataList[index]['data']['price']
-                                    .toString()),
-                              ],
-                            )
-                          ],
-                        ),
-                        buttonBar: GFButtonBar(
-                            alignment: WrapAlignment.end,
-                            crossAxisAlignment: WrapCrossAlignment.end,
-                            runAlignment: WrapAlignment.end,
-                            spacing: 0,
+                      return GestureDetector(
+                        onTap: () {
+                           Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    PropertyDetailsPage(wishlistDataList[index]['data'])),
+                          );
+                        },
+                        child: GFCard(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          content: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // mainAxisAlignment: MainAxisAlignment.,
                             children: [
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
-                                    onPressed: () {
-                                      PanaraConfirmDialog.show(
-                                        context,
-                                        title: "Are you sure?",
-                                        message:
-                                            "Do you realy want to remove this item.",
-                                        confirmButtonText: "Confirm",
-                                        cancelButtonText: "Cancel",
-                                        color: ColorsClass.themeColor,
-                                        onTapCancel: () {
-                                          // Navigator.pop(context);
-                                          Navigator.of(context, rootNavigator: true).pop();
-                                        },
-                                        onTapConfirm: () {
-                                          Navigator.of(context, rootNavigator: true).pop();
-                                          removeItemFromWishlist(
-                                              wishlistDataList[index]
-                                                  ['wishlistId']);
-                                        },
-                                        panaraDialogType:
-                                            PanaraDialogType.custom,
-                                        barrierDismissible:
-                                            false, // optional parameter (default is true)
-                                      );
-                                    },
-                                    // icon: const Icon(Icons.delete),
-                                    child: const Text('Remove')),
+                              Container(
+                                height: 90,
+                                width: 90,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    image: DecorationImage(
+                                        image: NetworkImage(
+                                          wishlistDataList[index]['data']
+                                              ['image']!,
+                                        ),
+                                        fit: BoxFit.fill)),
                               ),
-                            ]),
+                              const SizedBox(
+                                width: 30,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    wishlistDataList[index]['data']['title']
+                                        .toString(),
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    wishlistDataList[index]['data']['location']
+                                        .toString(),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(wishlistDataList[index]['data']['price']
+                                      .toString()),
+                                ],
+                              )
+                            ],
+                          ),
+                          buttonBar: GFButtonBar(
+                              alignment: WrapAlignment.end,
+                              crossAxisAlignment: WrapCrossAlignment.end,
+                              runAlignment: WrapAlignment.end,
+                              spacing: 0,
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                      onPressed: () {
+                                        PanaraConfirmDialog.show(
+                                          context,
+                                          title: "Are you sure?",
+                                          message:
+                                              "Do you realy want to remove this item.",
+                                          confirmButtonText: "Confirm",
+                                          cancelButtonText: "Cancel",
+                                          color: ColorsClass.themeColor,
+                                          onTapCancel: () {
+                                            // Navigator.pop(context);
+                                            Navigator.of(context, rootNavigator: true).pop();
+                                          },
+                                          onTapConfirm: () {
+                                            Navigator.of(context, rootNavigator: true).pop();
+                                            removeItemFromWishlist(
+                                                wishlistDataList[index]
+                                                    ['wishlistId']);
+                                          },
+                                          panaraDialogType:
+                                              PanaraDialogType.custom,
+                                          barrierDismissible:
+                                              false, // optional parameter (default is true)
+                                        );
+                                      },
+                                      // icon: const Icon(Icons.delete),
+                                      child: const Text('Remove')),
+                                ),
+                              ]),
+                        ),
                       );
                     })
             : const CircularProgressIndicator(),
