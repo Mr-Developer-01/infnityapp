@@ -1,12 +1,12 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'package:flutter/material.dart';
+import 'package:tribb/screens/components/add_to_cart.dart';
+import 'package:tribb/screens/components/counter_with_fav_btn.dart';
+import 'package:tribb/screens/components/description.dart';
+import 'package:tribb/screens/components/product_title_with_image.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/constant.dart';
-import 'components/add_to_cart.dart';
-import 'components/counter_with_fav_btn.dart';
-import 'components/description.dart';
-import 'components/product_title_with_image.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key, required this.product});

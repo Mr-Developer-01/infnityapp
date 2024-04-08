@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/constant.dart';
-import 'package:tribb/screens/details_screen.dart';
+import 'package:tribb/screens/referfriends/details_screen.dart';
 import 'package:tribb/screens/referfriends/item_cart.dart';
 import 'package:http/http.dart' as http;
 

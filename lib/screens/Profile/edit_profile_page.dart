@@ -305,13 +305,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: 70,
                 width: 320,
                 child: TextFeildWidget(firstname, Icons.person_2_outlined,
-                    "First Name", !isEditingMode),
+                    "First Name", !isEditingMode,TextInputType.text),
               ),
               SizedBox(
                 height: 70,
                 width: 320,
                 child: TextFeildWidget(lastname, Icons.person_2_outlined,
-                    "Last Name", !isEditingMode),
+                    "Last Name", !isEditingMode,TextInputType.text),
               ),
               SizedBox(
                 height: 80,
@@ -319,7 +319,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextFeildWidget(email, Icons.email_outlined, "Email", true),
+                    TextFeildWidget(email, Icons.email_outlined, "Email", true,TextInputType.emailAddress),
                     isEditingMode
                         ? const Padding(
                             padding: EdgeInsets.only(left: 2),
@@ -336,7 +336,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 height: 70,
                 width: 320,
                 child: TextFeildWidget(
-                    phone, Icons.phone_outlined, "Phone", !isEditingMode),
+                    phone, Icons.phone_outlined, "Phone", !isEditingMode,TextInputType.phone),
               ),
              
               SizedBox(
@@ -345,7 +345,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 child: Column(
                   children: [
                     TextFeildWidget(
-                        referralcode, Icons.group, "Referral Code", true),
+                        referralcode, Icons.group, "Referral Code", true,TextInputType.text),
                     isEditingMode
                         ? const Align(
                             alignment: Alignment.topLeft,

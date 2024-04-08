@@ -16,7 +16,9 @@ class Myproperty extends StatefulWidget {
 
 class _MypropertyState extends State<Myproperty> {
   var propertydata = [];
+  bool isLoadingMode = false;
   var projectList = [
+
     {
       "name": "CONSCIENT HINES ELEVATE",
       "rating": "4.9",
@@ -55,6 +57,10 @@ class _MypropertyState extends State<Myproperty> {
     },
   ];
   getPropertyData() async {
+    setState(() {
+      isLoadingMode = true;
+      propertydata = [];
+    });
     var tempDataList = [];
     try {
     CollectionReference reference =
@@ -70,10 +76,16 @@ class _MypropertyState extends State<Myproperty> {
           propertydata.add(element);
         }
       }
+      setState(() {
+      isLoadingMode = false;
+    });
     });
       
     } catch (e) {
       debugPrint('Error ::::::::::::::::: $e');
+       setState(() {
+      isLoadingMode = false;
+    });
     }
   }
 
@@ -108,7 +120,7 @@ class _MypropertyState extends State<Myproperty> {
           //     ))
         ],
       ),
-      body: propertydata != null?Padding(
+      body: !isLoadingMode?propertydata.isEmpty?Center(child: Text('No records to display.'),): Padding(
         padding: const EdgeInsets.only(left: 10, right: 10),
         child: SizedBox(
             child: ListView.builder(

@@ -25,7 +25,8 @@ class _SearchProprtiesState extends State<SearchProprties> {
   var propertyTypeFilterList = [
     {'name': "Ultra Luxury", "selected": false},
     {'name': "Luxury", "selected": false},
-    {'name': "Premium", "selected": false}
+    {'name': "Premium", "selected": false},
+    {'name': "For Rent", "selected": false}
   ];
   var priceItetsList = [
     '10L - 50L',
@@ -43,16 +44,18 @@ class _SearchProprtiesState extends State<SearchProprties> {
     var ultraTemp = [];
     var luxTemp = [];
     var priTemp = [];
+    var rentProproptyData = [];
     final usersRef = FirebaseFirestore.instance.collection('allproperties');
     final userDoc = await usersRef.doc('propertyTypes').get();
     final ultraLuxuryData = userDoc.reference.collection('ultra_luxury');
     final luxuryData = userDoc.reference.collection('luxury');
     final premiumData = userDoc.reference.collection('premium');
-    //  final postsQuerySnapshot = await _ultraLuxury.get();
-    var ultraLuxurytemp = await ultraLuxuryData.get();
+    final forRentData = userDoc.reference.collection('for_rent');
 
+    var ultraLuxurytemp = await ultraLuxuryData.get();
     var luxurytemp = await luxuryData.get();
     var premiumtemp = await premiumData.get();
+    var forRentTemp = await forRentData.get();
 
     for (var element in ultraLuxurytemp.docs) {
       if (isFirstTime ||
@@ -99,6 +102,25 @@ class _SearchProprtiesState extends State<SearchProprties> {
         });
       }
     }
+
+    for (var element in forRentTemp.docs) {
+      if (isFirstTime ||
+          (start <=
+                  parseStringToNumber(formatNumber(int.parse(element.data()['price'])).toString()) &&
+              end >=
+                  parseStringToNumber(formatNumber(int.parse(element.data()['price'])).toString()))) {
+        rentProproptyData.add({
+          "type": "For Rent",
+          "id": element.id,
+          "title": element.data()['title'] ?? '',
+          "image": element.data()['image'] ?? '',
+          "rating": element.data()['rating'] ?? '',
+          "price": element.data()['price'] + '/Month' ?? '',
+          "location": element.data()['location'] ?? '',
+        });
+      }
+    }
+
     if (mounted) {
       if (isFirstTime ||
           (isPropertyTypeAppled ||
@@ -114,6 +136,11 @@ class _SearchProprtiesState extends State<SearchProprties> {
           (isPropertyTypeAppled ||
               bool.parse(propertyTypeFilterList[2]['selected'].toString()))) {
         allPropertiesData.addAll(priTemp);
+      }
+      if (isFirstTime ||
+          (isPropertyTypeAppled ||
+              bool.parse(propertyTypeFilterList[3]['selected'].toString()))) {
+        allPropertiesData.addAll(rentProproptyData);
       }
 
       setState(() {
@@ -139,12 +166,10 @@ class _SearchProprtiesState extends State<SearchProprties> {
                   .contains(_searchController.text.toLowerCase()) ||
               element['title']
                   .toLowerCase()
-                  .contains(_searchController.text.toLowerCase())||
-                  element['type']
+                  .contains(_searchController.text.toLowerCase()) ||
+              element['type']
                   .toLowerCase()
-                  .contains(_searchController.text.toLowerCase())
-                  
-                  )
+                  .contains(_searchController.text.toLowerCase()))
           .toList();
       _isLoading = false;
     });
@@ -303,6 +328,9 @@ class _SearchProprtiesState extends State<SearchProprties> {
     } else if (number >= 100000) {
       double lakh = number / 100000;
       return '${lakh.toStringAsFixed(2)}L';
+    } else if (number >= 1000) {
+      double thou = number / 1000;
+      return '${thou.toStringAsFixed(2)}K';
     } else {
       return number.toString();
     }
@@ -318,6 +346,10 @@ class _SearchProprtiesState extends State<SearchProprties> {
       String numberPart = input.substring(0, input.length - 2);
       double crore = double.parse(numberPart);
       return (crore * 10000000).toInt();
+    }else if (input.endsWith('K')) {
+      String numberPart = input.substring(0, input.length - 1);
+      double crore = double.parse(numberPart);
+      return (crore * 1000).toInt();
     } else {
       // Handle other cases or throw an error if needed
       throw FormatException('Invalid format: $input');
@@ -460,9 +492,7 @@ class _SearchProprtiesState extends State<SearchProprties> {
                         ),
                       ),
                       const Spacer(),
-                      GFButtonBar(
-                        spacing:10,
-                        children: [
+                      GFButtonBar(spacing: 10, children: [
                         GFButton(
                           onPressed: () {
                             setState(() {

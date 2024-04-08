@@ -12,6 +12,8 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tribb/screens/constant/toast_message.dart';
 // import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:path/path.dart' as path;
+import 'package:firebase_storage/firebase_storage.dart';
 
 class UploadProperty extends StatefulWidget {
   const UploadProperty({super.key});
@@ -28,15 +30,18 @@ class _UploadPropertyState extends State<UploadProperty> {
   TextEditingController builduparea = TextEditingController();
   TextEditingController address = TextEditingController();
   TextEditingController description = TextEditingController();
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
   bool _isLoadingMode = false;
   Map<String, dynamic> dataMap = {};
+  File? selectedFile;
   final ImagePicker imagePicker = ImagePicker();
   var category = '';
   var status = '';
   var buildingage = '';
   var unittype = '';
   List<File> selectedImages = [];
+  var imageUrl = '';
   var imagesBase64 = [];
   final picker = ImagePicker();
   var unitStatusData = ['None', '2BR', '3BR'];
@@ -239,7 +244,8 @@ class _UploadPropertyState extends State<UploadProperty> {
     }
   ];
   Future getImages() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery,imageQuality:5);
+     var image = 
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
     if (image != null) {
       imagesBase64 = [];
       selectedImages = [];
@@ -247,7 +253,9 @@ class _UploadPropertyState extends State<UploadProperty> {
       final bytes = File(image.path).readAsBytesSync();
       String img64 = base64Encode(bytes);
       imagesBase64.add(img64);
-      setState(() {});
+      setState(() {
+        selectedFile = File(image.path);
+      });
     } else {
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
@@ -272,9 +280,25 @@ class _UploadPropertyState extends State<UploadProperty> {
     //       .showSnackBar(const SnackBar(content: Text('Nothing is selected')));
     // }ccccccc
   }
-
+Future<String?> uplaodImage()async{
+try {
+      var storageReference = FirebaseStorage.instance
+          .ref()
+          .child('propertyImages')
+          .child(path.basename(selectedFile!.path));
+      UploadTask uploadTask = storageReference.putFile(selectedFile!);
+      await uploadTask;
+      String downloadUrl = await storageReference.getDownloadURL();
+      return downloadUrl;
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red, content: Text('Please add photo')));
+      return null;
+    }
+}
   addNewProperty() async {
     if (imagesBase64.isNotEmpty && mounted) {
+      String? photoUrl = await uplaodImage();
       setState(() {
         _isLoadingMode = true;
         dataMap = {
@@ -291,7 +315,8 @@ class _UploadPropertyState extends State<UploadProperty> {
           "image": imagesBase64[0],
           "images": imagesBase64,
           "amenities": amenities,
-          "user-id": FirebaseAuth.instance.currentUser!.uid
+          "user-id": FirebaseAuth.instance.currentUser!.uid,
+          "photo_Url":photoUrl
         };
       });
       try {
@@ -301,7 +326,8 @@ class _UploadPropertyState extends State<UploadProperty> {
             _isLoadingMode = false;
           });
         }
-        ToastMessages.successMessage(context, 'Property successfully added');
+        ToastMessages.successMessage(
+            context as BuildContext, 'Property successfully added');
         setNullData();
       } catch (e) {
         if (mounted) {
@@ -309,11 +335,11 @@ class _UploadPropertyState extends State<UploadProperty> {
             _isLoadingMode = false;
           });
         }
-        ToastMessages.errorMessage(context, '$e');
+        ToastMessages.errorMessage(context as BuildContext, '$e');
       }
     } else {
-      ToastMessages.warnigMessage(
-          context, 'Please select at least one image to proceed.');
+      ToastMessages.warnigMessage(context as BuildContext,
+          'Please select at least one image to proceed.');
     }
   }
 

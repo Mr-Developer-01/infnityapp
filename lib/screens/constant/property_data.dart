@@ -317,7 +317,168 @@ class PropertyData {
     {"name": 'Siebrand Van Beusichem', "username": "siebrandvan"},
     {"name": 'Hugo Regalado', "username": "hugoregalado"}
   ];
-
+ static var amenities = [
+    {
+      "isSelected": false,
+      "name": 'Reserve Parking',
+    },
+    {
+      "isSelected": false,
+      "name": 'Visitor Parking',
+    },
+    {
+      "isSelected": false,
+      "name": '24*7 Power Back-Up',
+    },
+    {
+      "isSelected": false,
+      "name": 'Lift',
+    },
+    {
+      "isSelected": false,
+      "name": 'Jogging Track',
+    },
+    {
+      "isSelected": false,
+      "name": 'Cycling Track',
+    },
+    {
+      "isSelected": false,
+      "name": 'Intercom',
+    },
+    {
+      "isSelected": false,
+      "name": 'Park',
+    },
+    {
+      "isSelected": false,
+      "name": 'Community Center',
+    },
+    {
+      "isSelected": false,
+      "name": 'Security Personnel',
+    },
+    {
+      "isSelected": false,
+      "name": '24*7 Water',
+    },
+    {
+      "isSelected": false,
+      "name": 'Maintenance Staff',
+    },
+    {
+      "isSelected": false,
+      "name": 'Security / Fire Alarm',
+    },
+    {
+      "isSelected": false,
+      "name": 'Club-House',
+    },
+    {
+      "isSelected": false,
+      "name": 'Fire-Fighting',
+    },
+    {
+      "isSelected": false,
+      "name": 'Badminton Court',
+    },
+    {
+      "isSelected": false,
+      "name": 'Cafe Lounge',
+    },
+    {
+      "isSelected": false,
+      "name": 'Mini Theatre',
+    },
+    {
+      "isSelected": false,
+      "name": 'Squash Court',
+    },
+    {
+      "isSelected": false,
+      "name": 'Skating Rink',
+    },
+    {
+      "isSelected": false,
+      "name": 'Steam Sauna Bath',
+    },
+    {
+      "isSelected": false,
+      "name": 'Yoga & Meditation Area',
+    },
+    {
+      "isSelected": false,
+      "name": 'Cricket Practice Pitch',
+    },
+    {
+      "isSelected": false,
+      "name": 'Pet Garden',
+    },
+    {
+      "isSelected": false,
+      "name": 'Toddler Play Area',
+    },
+    {
+      "isSelected": false,
+      "name": 'CCTV',
+    },
+    {
+      "isSelected": false,
+      "name": 'GYM',
+    },
+    {
+      "isSelected": false,
+      "name": 'Walking/Jogging track',
+    },
+    {
+      "isSelected": false,
+      "name": 'Play area',
+    },
+    {
+      "isSelected": false,
+      "name": 'Club house',
+    },
+    {
+      "isSelected": false,
+      "name": 'Swimming pool',
+    },
+    {
+      "isSelected": false,
+      "name": 'Rooftop garden',
+    },
+    {
+      "isSelected": false,
+      "name": 'Open deck',
+    },
+    {
+      "isSelected": false,
+      "name": 'Sky lounge',
+    },
+    {
+      "isSelected": false,
+      "name": 'Spa and salon',
+    },
+    {
+      "isSelected": false,
+      "name": 'Concierge services',
+    },
+    {
+      "isSelected": false,
+      "name": 'Party hall',
+    },
+    {
+      "isSelected": false,
+      "name": 'Temple and religious activity place',
+    },
+    {
+      "isSelected": false,
+      "name": 'Cinema hall',
+    },
+    {
+      "isSelected": false,
+      "name": 'Wi-Fi connectivity',
+    }
+  ];
   static var facilitiesList = [
     {
       "name": "Gas",

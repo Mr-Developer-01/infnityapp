@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
   var ultraLuxury;
   var luxury;
   var premium;
+  var forRent;
   var base64Image;
   var profile_pic =
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfBUN-KgxbARoHkAW0nmjoKhGuRSy3flEQMeulh4TRCGNuFv5LJh7MTmA3sV1MkIr9uGk&usqp=CAU';
@@ -34,21 +35,24 @@ class _HomePageState extends State<HomePage> {
     var ultraTemp = [];
     var luxTemp = [];
     var priTemp = [];
+    var forRTemp = [];
     setState(() {
       ultraLuxury = null;
       luxury = null;
       premium = null;
+      forRent = null;
     });
     final usersRef = FirebaseFirestore.instance.collection('allproperties');
     final userDoc = await usersRef.doc('propertyTypes').get();
     final ultraLuxuryData = userDoc.reference.collection('ultra_luxury');
     final luxuryData = userDoc.reference.collection('luxury');
     final premiumData = userDoc.reference.collection('premium');
+    final forRentList = userDoc.reference.collection('for_rent');
     //  final postsQuerySnapshot = await _ultraLuxury.get();
     var ultraLuxurytemp = await ultraLuxuryData.get();
-
     var luxurytemp = await luxuryData.get();
     var premiumtemp = await premiumData.get();
+    var forRentTemp = await forRentList.get();
 
     for (var element in ultraLuxurytemp.docs) {
       var objData = await getWishLitedProperties(element.id);
@@ -92,11 +96,26 @@ class _HomePageState extends State<HomePage> {
         "WishListedid": jsoData['id'],
       });
     }
+    for (var element in forRentTemp.docs) {
+      var objData = await getWishLitedProperties(element.id);
+      var jsoData = jsonDecode(jsonEncode(objData));
+      forRTemp.add({
+        "id": element.id,
+        "title": element.data()['title'] ?? '',
+        "image": element.data()['image'] ?? '',
+        "rating": element.data()['rating'] ?? '',
+        "price": element.data()['price'] ?? '',
+        "location": element.data()['location'] ?? '',
+        "isWishListed": jsoData['isWishListed'] ?? '',
+        "WishListedid": jsoData['id'] ?? '',
+      });
+    }
     if (mounted) {
       setState(() {
         ultraLuxury = ultraTemp;
         luxury = luxTemp;
         premium = priTemp;
+        forRent = forRTemp;
       });
     }
   }
@@ -488,6 +507,50 @@ class _HomePageState extends State<HomePage> {
                           "WishListedid": premium[index]['WishListedid'],
                           "index": index,
                           "type": "Premium"
+                        });
+                      })
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+            ),
+            // const SizedBox(
+            //   height: 40,
+            // ),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0, top: 20),
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'For Rent ',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: ColorsClass.themeColor,
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 250,
+              width: 500,
+              child: forRent != null
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: forRent.length,
+                      itemBuilder: (context, index) {
+                        return _tabSection(context, {
+                          "id": forRent[index]['id'],
+                          "title": forRent[index]['title'],
+                          "image": forRent[index]['image'],
+                          "rating": forRent[index]['rating'],
+                          "price": forRent[index]['price'],
+                          "location": forRent[index]['location'],
+                          "isWishListed": forRent[index]['isWishListed'],
+                          "WishListedid": forRent[index]['WishListedid'],
+                          "index": index,
+                          "type": "For Rent"
                         });
                       })
                   : const Center(

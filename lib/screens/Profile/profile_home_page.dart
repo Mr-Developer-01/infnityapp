@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tribb/screens/Profile/ForRent/for_rent_home.dart';
 import 'package:tribb/screens/Profile/edit_profile_page.dart';
 import 'package:tribb/screens/Profile/wishlist_page.dart';
 import 'package:tribb/screens/constant/colors.dart';
@@ -102,20 +103,6 @@ class ProfileHomePagePage extends State<ProfileHomePage> {
                                   return RoundedPopup(base64Image);
                                 },
                               );
-                              // showModalBottomSheet(
-                              //     isDismissible: false,
-                              //     context: context,
-                              //     builder: (BuildContext _) {
-                              //       return Stack(
-                              //         children: [
-                              //          Container(
-
-                              //           child: Image.memory(
-                              //       const Base64Decoder().convert(base64Image)),
-                              //          )
-                              //         ],
-                              //       );
-                              //     });
                             },
                           ),
                   ],
@@ -135,9 +122,15 @@ class ProfileHomePagePage extends State<ProfileHomePage> {
               ),
 
               ProfileMenu(
-                text: "Settings",
-                icon: "assets/icons/Settings.svg",
-                press: () {},
+                text: "List my home for rent",
+                icon: "assets/icons/Homerent.svg",
+                press: () {
+                   Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ForRentPage()),
+                  );
+                },
               ),
               ProfileMenu(
                 text: "Help Center",

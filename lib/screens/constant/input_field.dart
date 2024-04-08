@@ -8,22 +8,24 @@ class TextFeildWidget extends StatelessWidget {
   String labelName;
   IconData iconName;
   bool readOnly;
-  TextFeildWidget(this.contrNAme, this.iconName, this.labelName, this.readOnly,
+  var keyboardType;
+  TextFeildWidget(this.contrNAme, this.iconName, this.labelName, this.readOnly,this.keyboardType,
       {super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
        readOnly: readOnly,
       validator: (value) {
         if (value!.isEmpty) {
-          return ' This field is required';
+          return 'This field is required';
         }
         return null;
       },
       controller: contrNAme,
       decoration: InputDecoration(
-        prefixIcon: Icon(iconName),
+        // prefixIcon: Icon(iconName,size: 0,),
         filled: true,
         fillColor: ColorsClass.fillColor,
         border: const OutlineInputBorder(
@@ -46,7 +48,7 @@ class TextFeildWidget extends StatelessWidget {
           color: ColorsClass.themeColor,
           fontSize: 14,
         ),
-        contentPadding: const EdgeInsets.only(left: 15, right: 15),
+        contentPadding: const EdgeInsets.only(left: 20, right: 15),
       ),
       // onChanged: (value) {
       //   setState(() {
