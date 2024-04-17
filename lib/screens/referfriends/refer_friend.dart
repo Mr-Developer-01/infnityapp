@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tribb/screens/constant/API/call_api.dart';
 import 'package:tribb/screens/constant/colors.dart';
 import 'package:tribb/screens/constant/custom_bottom_bar.dart';
+import 'package:tribb/screens/referfriends/pending_reffral_page.dart';
 import 'package:tribb/screens/referfriends/product_claim_page.dart';
 import 'package:tribb/screens/referfriends/referfriend.dart';
 import 'package:share/share.dart';
@@ -339,40 +340,54 @@ class _ReferFriendPageState extends State<ReferFriendPage> {
                             ),
                           ),
                         ),
-                        Card(
-                          child: Container(
-                            height: 100,
-                            width: MediaQuery.of(context).size.width / 2.30,
-                            decoration: BoxDecoration(
-                              // color: Colors.green,
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(10),
-                              // border: Border.all(color: Colors.grey)
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                // mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Flexible(
-                                      child: Text(
-                                    'Pending Referrals',
-                                    style: TextStyle(
-                                      color: ColorsClass.themeColor,
-                                    ),
-                                  )),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    pandingReferral,
-                                    style: TextStyle(
+                        GestureDetector(
+                          onTap: () {
+                             Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const PendingReffralPage()),
+                          );
+                          },
+                          child: Card(
+                            child: Container(
+                              height: 100,
+                              width: MediaQuery.of(context).size.width / 2.30,
+                              decoration: BoxDecoration(
+                                // color: Colors.green,
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(10),
+                                // border: Border.all(color: Colors.grey)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  // mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                        child: Text(
+                                      'Pending Referrals',
+                                      style: TextStyle(
                                         color: ColorsClass.themeColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20),
-                                  ),
-                                ],
+                                      ),
+                                    )),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      pandingReferral,
+                                      style: TextStyle(
+                                          color: ColorsClass.themeColor,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Icon(Icons.arrow_forward_ios,color: ColorsClass.themeColor,size: 15,),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),

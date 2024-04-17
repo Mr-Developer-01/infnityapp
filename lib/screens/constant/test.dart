@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import 'package:tribb/screens/constant/toast_message.dart';
 
@@ -20,24 +21,59 @@ class _MyHomePageState extends State<MyHomePageChart> {
   final GlobalKey<SfSignaturePadState> _signaturePadKey = GlobalKey();
   Color penColor = Colors.black;
   double penSize = 4;
-
+  var monthData = [];
   _saveImage(Uint8List bytes) async {
     try {
       final file = File('/storage/emulated/0/Download/signature.png');
       //  var savePath = '/storage/emulated/0/Download/$filename';/
-    await file.writeAsBytes(bytes,mode: FileMode.write);
-     ToastMessages.successMessage(context, 'Image Saved Successfully!');
-    } catch (e) { 
+      await file.writeAsBytes(bytes, mode: FileMode.write);
+      ToastMessages.successMessage(context, 'Image Saved Successfully!');
+    } catch (e) {
       ToastMessages.errorMessage(context, "Error ${e.toString()}");
     }
   }
 
+  @override
+  void initState() {
+    getMonthDetails();
+    super.initState();
+  }
+
+  getMonthDetails() {
+   var date = '2024-04-09 17:15:02.872388';
+    var trmpData = [];
+    for (var i = 1; i <= daysInMonth(DateTime.parse(date)); i++) {
+      var obj = {"dayNumber": i, "weekDay": DateFormat('EEEE').format(DateTime.parse('2024-04-${i <= 9?'0$i' :i} 17:15:02.872388')), "attendOrNot": i%2 ==0?"A":"P"};
+      trmpData.add(obj);
+    }
+    if (trmpData.isNotEmpty) {
+      monthData.addAll(trmpData);
+    }
+  }
+  int daysInMonth(DateTime date) {
+    var firstDayThisMonth = DateTime(date.year, date.month, date.day);
+    var firstDayNextMonth = DateTime(firstDayThisMonth.year,
+        firstDayThisMonth.month + 1, firstDayThisMonth.day);
+    return firstDayNextMonth.difference(firstDayThisMonth).inDays;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Testing'),
       ),
+      // body: Padding(
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: monthData.isNotEmpty? GridView.builder(
+      //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      //         crossAxisCount: 3),
+      //     itemBuilder: (_, index) => circularViewComponent(monthData[index]),
+      //     itemCount: monthData.length,
+      //   ):const Center(
+      //     child: CircularProgressIndicator(),
+      //   ),
+      // ),
+
       body: Center(
         child: SingleChildScrollView(
           physics: const NeverScrollableScrollPhysics(),
@@ -323,6 +359,33 @@ class _MyHomePageState extends State<MyHomePageChart> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+
+
+  Widget circularViewComponent(var data) {
+    return GestureDetector(
+      onTap: () {
+      },
+      child:  GFCard(
+        padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+        content: Column(
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('${data['dayNumber']}, ${data['weekDay'].toString().substring(0,3)}'),
+            const SizedBox(
+              height: 5,
+            ),
+            GFAvatar(
+                radius: 18,
+                backgroundColor: data['attendOrNot'] == "P"?Colors.lightGreen:Colors.red[300],
+                size: GFSize.SMALL,
+                child: Text('${data['attendOrNot']}')),
+          ],
         ),
       ),
     );

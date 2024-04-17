@@ -1,4 +1,5 @@
-import 'dart:convert';
+
+// ignore_for_file: prefer_typing_uninitialized_variables
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,8 +26,21 @@ class _ForRentPageState extends State<ForRentPage> {
   bool isLoadingMode = false;
   var selectedProperty;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  getRentedPropertyRecords() async {
+    var rentedPropertyIds = [];
+    final usersRef = FirebaseFirestore.instance.collection('allproperties');
+    final userDoc = await usersRef.doc('propertyTypes').get();
+    final forRentData = userDoc.reference
+        .collection('for_rent')
+        .where("user-Id", isEqualTo: FirebaseAuth.instance.currentUser!.uid);
+    var forRentList = await forRentData.get();
+    for (var element in forRentList.docs) {
+      rentedPropertyIds.add(element.data()['property-Id']);
+    }
+    getPropertyNameForPropertyFields(rentedPropertyIds);
+  }
 
-  getPropertyNameForPropertyFields() async {
+  getPropertyNameForPropertyFields(var ids) async {
     var propertydata = [];
     CollectionReference reference =
         FirebaseFirestore.instance.collection('properties');
@@ -42,15 +56,16 @@ class _ForRentPageState extends State<ForRentPage> {
       });
       for (var element in propertydata) {
         if (element['user-id'].toString() ==
-            (FirebaseAuth.instance.currentUser!.uid).toString()) {
+                (FirebaseAuth.instance.currentUser!.uid).toString() &&
+            !ids.contains(element['id'].toString())) {
           propertyList.add(element['title']);
           objList.add({
             "Id": element['id'],
             "title": element['title'],
             "image": element['photo_Url'],
-            "address":element['address'],
-            "price":element['price'],
-            "rating":element['rating']
+            "address": element['address'],
+            "price": element['price'],
+            "rating": element['rating']
           });
         }
       }
@@ -67,46 +82,47 @@ class _ForRentPageState extends State<ForRentPage> {
   }
 
   submitData() {
-    if(ameenitiesList.any((element) => element['isSelected'] == true)){
-    setState(() {
-      isLoadingMode = true;
-    });
-    var propertyDetails = objList
-        .where((element) => element['title'] == selectedProperty)
-        .toList();
-    var dataObj = {
-      "title": propertyDetails[0]['title'],
-      "image": propertyDetails[0]['image'],
-      "location": propertyDetails[0]['address'],
-      "price": rentpermonth.text,
-      "user-Id": FirebaseAuth.instance.currentUser!.uid,
-      "property-Id": propertyDetails[0]['Id'],
-      "rating":propertyDetails[0]['rating']
-    };
-    var usersRef = FirebaseFirestore.instance.collection('allproperties');
-    var userDocRef = usersRef.doc('propertyTypes');
-    var postsRef = userDocRef.collection('for_rent');
-    var newRentRecord = postsRef.add(dataObj);
-    newRentRecord.then((value) {
-       setState(() {
-      isLoadingMode = false;
-    });
-    ToastMessages.successMessage(context, 'Request has been submitted.');
-    _formKey.currentState!.reset();
-    setState(() {
-      rentpermonth.text = '';
-      for (var i = 0; i < ameenitiesList.length; i++) {
-        ameenitiesList[i]['isSelected'] = false;
-      }
-    });
-    }).onError((error, stackTrace) {
-       setState(() {
-      isLoadingMode = false;
-    });
-    ToastMessages.errorMessage(context, 'Something went wrong.');
-    });
-    }else{
-      ToastMessages.warnigMessage(context, 'Please select at least one amenity to proceed.');
+    if (ameenitiesList.any((element) => element['isSelected'] == true)) {
+      setState(() {
+        isLoadingMode = true;
+      });
+      var propertyDetails = objList
+          .where((element) => element['title'] == selectedProperty)
+          .toList();
+      var dataObj = {
+        "title": propertyDetails[0]['title'],
+        "image": propertyDetails[0]['image'],
+        "location": propertyDetails[0]['address'],
+        "price": rentpermonth.text,
+        "user-Id": FirebaseAuth.instance.currentUser!.uid,
+        "property-Id": propertyDetails[0]['Id'],
+        "rating": propertyDetails[0]['rating']
+      };
+      var usersRef = FirebaseFirestore.instance.collection('allproperties');
+      var userDocRef = usersRef.doc('propertyTypes');
+      var postsRef = userDocRef.collection('for_rent');
+      var newRentRecord = postsRef.add(dataObj);
+      newRentRecord.then((value) {
+        setState(() {
+          isLoadingMode = false;
+        });
+        ToastMessages.successMessage(context, 'Request has been submitted.');
+        _formKey.currentState!.reset();
+        setState(() {
+          rentpermonth.text = '';
+          for (var i = 0; i < ameenitiesList.length; i++) {
+            ameenitiesList[i]['isSelected'] = false;
+          }
+        });
+      }).onError((error, stackTrace) {
+        setState(() {
+          isLoadingMode = false;
+        });
+        ToastMessages.errorMessage(context, 'Something went wrong.');
+      });
+    } else {
+      ToastMessages.warnigMessage(
+          context, 'Please select at least one amenity to proceed.');
     }
   }
 
@@ -115,7 +131,8 @@ class _ForRentPageState extends State<ForRentPage> {
     setState(() {
       ameenitiesList = PropertyData.amenities;
     });
-    getPropertyNameForPropertyFields();
+    getRentedPropertyRecords();
+    // getPropertyNameForPropertyFields();
     super.initState();
   }
 
@@ -148,12 +165,12 @@ class _ForRentPageState extends State<ForRentPage> {
                 ),
                 TextFeildWidget(rentpermonth, Icons.currency_rupee_sharp,
                     "Rent per month", false, TextInputType.number),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 headerText('Amenities & Features'),
                 amenitiesAndfeaturesCard(),
-                SizedBox(
+                const SizedBox(
                   height: 40,
                 ),
                 Padding(
@@ -206,14 +223,12 @@ class _ForRentPageState extends State<ForRentPage> {
                             onChanged: (value) {
                               setState(() {
                                 ameenitiesList[i]['isSelected'] =
-                                    ameenitiesList[i]['isSelected'] ==
-                                            true
+                                    ameenitiesList[i]['isSelected'] == true
                                         ? false
                                         : true;
                               });
                             },
-                            value:
-                                ameenitiesList[i]['isSelected'] as bool,
+                            value: ameenitiesList[i]['isSelected'] as bool,
                             activeBgColor: ColorsClass.themeColor,
                           ),
                           Text(

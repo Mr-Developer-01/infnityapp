@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:tribb/screens/Profile/profile_home_page.dart';
-import 'package:tribb/screens/constant/test.dart';
 import 'package:tribb/screens/moreOptions/option_home_page.dart';
 import 'package:tribb/screens/properties/property_details.dart';
 import 'package:flutter/material.dart';
@@ -236,11 +235,11 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MyHomePageChart()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => MyHomePageChart()),
+                    // );
                   },
                   icon: Icon(
                     Icons.notifications_none_sharp,

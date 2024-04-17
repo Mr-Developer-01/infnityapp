@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings, use_build_context_synchronously
+// ignore_for_file: prefer_interpolation_to_compose_strings, use_build_context_synchronously, depend_on_referenced_packages
 
 import 'dart:convert';
 import 'dart:io';
@@ -30,7 +30,6 @@ class _UploadPropertyState extends State<UploadProperty> {
   TextEditingController builduparea = TextEditingController();
   TextEditingController address = TextEditingController();
   TextEditingController description = TextEditingController();
-  final FirebaseStorage _storage = FirebaseStorage.instance;
   final db = FirebaseFirestore.instance;
   bool _isLoadingMode = false;
   Map<String, dynamic> dataMap = {};
@@ -291,7 +290,7 @@ try {
       String downloadUrl = await storageReference.getDownloadURL();
       return downloadUrl;
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.red, content: Text('Please add photo')));
       return null;
     }
@@ -327,7 +326,7 @@ try {
           });
         }
         ToastMessages.successMessage(
-            context as BuildContext, 'Property successfully added');
+            context, 'Property successfully added');
         setNullData();
       } catch (e) {
         if (mounted) {
@@ -335,10 +334,10 @@ try {
             _isLoadingMode = false;
           });
         }
-        ToastMessages.errorMessage(context as BuildContext, '$e');
+        ToastMessages.errorMessage(context, '$e');
       }
     } else {
-      ToastMessages.warnigMessage(context as BuildContext,
+      ToastMessages.warnigMessage(context,
           'Please select at least one image to proceed.');
     }
   }
